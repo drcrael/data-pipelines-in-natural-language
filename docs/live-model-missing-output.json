@@ -1,0 +1,41 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 458.551053913,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Every declared destination must be written"
+        ]
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 216.97716197499994,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Unresolved or non-output destination: asset:analytics",
+          "Wrong input count: copy_orders"
+        ]
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark."
+}

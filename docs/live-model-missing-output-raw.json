@@ -1,0 +1,140 @@
+[
+  {
+    "status": "ready",
+    "intent": "Create an ad-hoc development pipeline named orders_copy",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "orders_copy",
+      "sources": [
+        {
+          "asset": "orders",
+          "incremental_field": null,
+          "window": "all"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "load_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {},
+          "dependencies": [],
+          "retries": null,
+          "timeout": null
+        }
+      ],
+      "destinations": [
+        {
+          "asset": "analytics",
+          "mode": "replace",
+          "key": []
+        }
+      ],
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      },
+      "approval_requirements": {
+        "production": true,
+        "external_writes": true,
+        "destructive_writes": true
+      }
+    },
+    "errors": []
+  },
+  {
+    "status": "ready",
+    "intent": "Create a development pipeline for copying orders dataset to analytics on demand",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "Orders Copy Pipeline",
+      "sources": [
+        {
+          "asset": "orders",
+          "incremental_field": null,
+          "window": "all"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "load_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {},
+          "dependencies": [],
+          "retries": null,
+          "timeout": null
+        },
+        {
+          "id": "copy_orders",
+          "type": "transformation",
+          "capability": "transform.union@1",
+          "inputs": [
+            "task:load_orders"
+          ],
+          "outputs": [],
+          "parameters": {},
+          "dependencies": [],
+          "retries": null,
+          "timeout": null
+        },
+        {
+          "id": "output_orders",
+          "type": "output",
+          "capability": "output.jsonl@1",
+          "inputs": [
+            "task:copy_orders"
+          ],
+          "outputs": [
+            "asset:analytics"
+          ],
+          "parameters": {},
+          "dependencies": [],
+          "retries": null,
+          "timeout": null
+        }
+      ],
+      "notifications": [],
+      "slas": [],
+      "lineage": [
+        {
+          "source": "task:load_orders",
+          "destination": "asset:orders"
+        },
+        {
+          "source": "task:copy_orders",
+          "destination": "asset:orders"
+        },
+        {
+          "source": "task:output_orders",
+          "destination": "asset:analytics"
+        }
+      ],
+      "resources": {
+        "cpu": 1,
+        "memory_mb": 512,
+        "max_rows": 100000
+      },
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      },
+      "approval_requirements": {
+        "production": false,
+        "external_writes": false,
+        "destructive_writes": false
+      }
+    },
+    "errors": []
+  }
+]
