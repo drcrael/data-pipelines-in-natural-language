@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nlpipe"
+version = "0.1.0"
+description = "A governed natural-language compiler for portable data pipelines"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["pydantic>=2.10,<3", "PyYAML>=6,<7", "httpx>=0.28,<1", "typer>=0.16,<1", "croniter>=6,<7", "jsonschema>=4,<5"]
+
+[project.optional-dependencies]
+parquet = ["pyarrow>=20"]
+airflow = ["apache-airflow>=3.1,<4"]
+dev = ["pytest>=8,<10", "pytest-cov>=6", "hypothesis>=6", "ruff>=0.12", "mypy>=1.15", "types-PyYAML", "types-croniter", "types-jsonschema", "build"]
+
+[project.scripts]
+nlpipe = "nlpipe.cli:app"
+pipeline = "nlpipe.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+nlpipe = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["unit: unit tests", "integration: cross-component tests", "security: trust boundaries", "acceptance: CLI and corpus", "airflow: real Airflow validation", "property: generated invariants", "performance: resource checks"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+
+[tool.coverage.run]
+source = ["nlpipe"]
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+
+[[tool.mypy.overrides]]
+module = ["pyarrow", "pyarrow.*"]
+ignore_missing_imports = true

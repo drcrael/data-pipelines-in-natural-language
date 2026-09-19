@@ -1,0 +1,157 @@
+assets:
+- identifier: orders
+  type: csv
+  location: orders.csv
+  schema:
+    order_id: integer
+    customer_id: integer
+    amount: number
+    region: string
+  allowed_operations:
+  - read
+- identifier: customers
+  type: json
+  location: customers.json
+  schema:
+    customer_id: integer
+    name: string
+    region: string
+  allowed_operations:
+  - read
+- identifier: analytics
+  type: jsonl
+  location: output/analytics.jsonl
+  schema: {}
+  allowed_operations:
+  - write
+  aliases:
+  - analytics store
+- identifier: warehouse
+  type: sqlite
+  location: output/warehouse.db
+  schema:
+    order_id: integer
+    customer_id: integer
+    amount: number
+    region: string
+  allowed_operations:
+  - write
+  - delete
+  table: orders
+- identifier: parquet_store
+  type: parquet
+  location: output/data.parquet
+  schema: {}
+  allowed_operations:
+  - write
+  aliases:
+  - parquet
+- identifier: quarantine
+  type: jsonl
+  location: output/quarantine.jsonl
+  schema: {}
+  allowed_operations:
+  - write
+- identifier: data_team
+  type: notification
+  location: outbox
+  schema: {}
+  allowed_operations:
+  - notify
+  aliases:
+  - data team
+- identifier: weather_observations
+  type: http
+  location: https://example.com/weather
+  schema:
+    temperature: number
+    observed_at: datetime
+  allowed_operations:
+  - read
+  aliases:
+  - weather
+- identifier: sensor_readings
+  type: json
+  location: sensors.json
+  schema:
+    sensor_id: integer
+    value: number
+  allowed_operations:
+  - read
+  aliases:
+  - sensor readings
+- identifier: web_events
+  type: jsonl
+  location: events.jsonl
+  schema:
+    event_id: string
+  allowed_operations:
+  - read
+  aliases:
+  - web events
+- identifier: inventory
+  type: csv
+  location: inventory.csv
+  schema:
+    product_id: string
+    quantity: integer
+  allowed_operations:
+  - read
+- identifier: support_tickets
+  type: json
+  location: tickets.json
+  schema:
+    ticket_id: string
+    text: string
+  allowed_operations:
+  - read
+  aliases:
+  - support tickets
+- identifier: products
+  type: json
+  location: products.json
+  schema:
+    product_id: string
+    description: string
+  allowed_operations:
+  - read
+- identifier: transactions_a
+  type: json
+  location: a.json
+  schema:
+    transaction_id: integer
+    amount: number
+  allowed_operations:
+  - read
+  aliases:
+  - transactions
+- identifier: transactions_b
+  type: json
+  location: b.json
+  schema:
+    transaction_id: integer
+    amount: number
+  allowed_operations:
+  - read
+  aliases:
+  - transactions
+- identifier: customer_primary
+  type: json
+  location: primary.json
+  schema:
+    customer_id: integer
+  allowed_operations:
+  - read
+  aliases:
+  - customer data
+  - customer records
+- identifier: customer_secondary
+  type: json
+  location: secondary.json
+  schema:
+    customer_id: integer
+  allowed_operations:
+  - read
+  aliases:
+  - customer data
+  - customer records

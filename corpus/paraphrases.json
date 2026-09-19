@@ -1,0 +1,13 @@
+[
+  {
+    "canonical_id": "orders_daily_0200",
+    "requests": [
+      "Load orders into analytics daily at 2 AM.",
+      "Every day at 02:00, read orders and write analytics.",
+      "Each day at two in the morning, ingest orders into analytics.",
+      "I need orders loaded into analytics nightly. Schedule it for 2 AM.",
+      "At 2 AM each day copy orders to analytics.",
+      "Process orders into analytics every night at 02:00."
+    ]
+  }
+]

@@ -1,0 +1,738 @@
+{
+  "$defs": {
+    "ApprovalPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "production": {
+          "default": true,
+          "title": "Production",
+          "type": "boolean"
+        },
+        "external_writes": {
+          "default": true,
+          "title": "External Writes",
+          "type": "boolean"
+        },
+        "destructive_writes": {
+          "default": true,
+          "title": "Destructive Writes",
+          "type": "boolean"
+        }
+      },
+      "title": "ApprovalPolicy",
+      "type": "object"
+    },
+    "Dependency": {
+      "additionalProperties": false,
+      "properties": {
+        "upstream": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Upstream",
+          "type": "string"
+        },
+        "downstream": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Downstream",
+          "type": "string"
+        }
+      },
+      "required": [
+        "upstream",
+        "downstream"
+      ],
+      "title": "Dependency",
+      "type": "object"
+    },
+    "DestinationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Asset",
+          "type": "string"
+        },
+        "mode": {
+          "default": "replace",
+          "enum": [
+            "replace",
+            "append",
+            "upsert",
+            "rebuild"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "key": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Key",
+          "type": "array"
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "title": "DestinationSpec",
+      "type": "object"
+    },
+    "ExecutionPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "default": "dev",
+          "enum": [
+            "dev",
+            "production"
+          ],
+          "title": "Environment",
+          "type": "string"
+        },
+        "idempotent": {
+          "default": true,
+          "title": "Idempotent",
+          "type": "boolean"
+        },
+        "schema_evolution": {
+          "default": "reject",
+          "enum": [
+            "reject",
+            "approved"
+          ],
+          "title": "Schema Evolution",
+          "type": "string"
+        }
+      },
+      "title": "ExecutionPolicy",
+      "type": "object"
+    },
+    "GovernanceRule": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "require_owner",
+            "require_approval",
+            "deny_external_write"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "GovernanceRule",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "LineageEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "destination": {
+          "title": "Destination",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "destination"
+      ],
+      "title": "LineageEdge",
+      "type": "object"
+    },
+    "NotificationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Asset",
+          "type": "string"
+        },
+        "on": {
+          "default": "failure",
+          "enum": [
+            "failure",
+            "success",
+            "quality"
+          ],
+          "title": "On",
+          "type": "string"
+        },
+        "threshold": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "title": "NotificationPolicy",
+      "type": "object"
+    },
+    "QualityRule": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "task": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Task",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "not_null",
+            "unique",
+            "range",
+            "schema",
+            "row_count",
+            "freshness",
+            "referential",
+            "distribution"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "max_invalid_rate": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Invalid Rate",
+          "type": "number"
+        },
+        "action": {
+          "default": "fail",
+          "enum": [
+            "fail",
+            "quarantine"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "quarantine_asset": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,62}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quarantine Asset"
+        },
+        "retention_days": {
+          "anyOf": [
+            {
+              "maximum": 3650,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retention Days"
+        }
+      },
+      "required": [
+        "id",
+        "task",
+        "kind"
+      ],
+      "title": "QualityRule",
+      "type": "object"
+    },
+    "ResourceSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 64,
+          "title": "Cpu",
+          "type": "number"
+        },
+        "memory_mb": {
+          "default": 512,
+          "maximum": 131072,
+          "minimum": 64,
+          "title": "Memory Mb",
+          "type": "integer"
+        },
+        "max_rows": {
+          "default": 100000,
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Max Rows",
+          "type": "integer"
+        }
+      },
+      "title": "ResourceSpec",
+      "type": "object"
+    },
+    "RetryPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "retries": {
+          "default": 2,
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Retries",
+          "type": "integer"
+        },
+        "delay_seconds": {
+          "default": 60,
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Delay Seconds",
+          "type": "integer"
+        },
+        "exponential_backoff": {
+          "default": true,
+          "title": "Exponential Backoff",
+          "type": "boolean"
+        }
+      },
+      "title": "RetryPolicy",
+      "type": "object"
+    },
+    "SLASpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_duration_seconds": {
+          "maximum": 604800,
+          "minimum": 1,
+          "title": "Max Duration Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_duration_seconds"
+      ],
+      "title": "SLASpec",
+      "type": "object"
+    },
+    "ScheduleSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "cron": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cron"
+        }
+      },
+      "title": "ScheduleSpec",
+      "type": "object"
+    },
+    "SecretReference": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "provider": {
+          "default": "environment",
+          "enum": [
+            "environment",
+            "airflow_connection"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "key": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_]{0,127}$",
+          "title": "Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "key"
+      ],
+      "title": "SecretReference",
+      "type": "object"
+    },
+    "SourceSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Asset",
+          "type": "string"
+        },
+        "incremental_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incremental Field"
+        },
+        "window": {
+          "default": "all",
+          "enum": [
+            "all",
+            "previous_day"
+          ],
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "title": "SourceSpec",
+      "type": "object"
+    },
+    "TaskSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "ingestion",
+            "transformation",
+            "quality",
+            "enrichment",
+            "output",
+            "operations"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "capability": {
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*@1$",
+          "title": "Capability",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "outputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Outputs",
+          "type": "array"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "dependencies": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "retries": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retries"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "maximum": 86400,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout"
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceSpec"
+        },
+        "failure_behavior": {
+          "default": "stop",
+          "enum": [
+            "stop",
+            "notify_and_stop"
+          ],
+          "title": "Failure Behavior",
+          "type": "string"
+        },
+        "quality_checks": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "type": "string"
+          },
+          "title": "Quality Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "capability"
+      ],
+      "title": "TaskSpec",
+      "type": "object"
+    },
+    "TimeoutPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "task_seconds": {
+          "default": 300,
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Task Seconds",
+          "type": "integer"
+        },
+        "pipeline_seconds": {
+          "default": 3600,
+          "maximum": 604800,
+          "minimum": 1,
+          "title": "Pipeline Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "TimeoutPolicy",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Version",
+      "type": "string"
+    },
+    "pipeline_id": {
+      "pattern": "^[a-z][a-z0-9_]{0,62}$",
+      "title": "Pipeline Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "maxLength": 5000,
+      "title": "Description",
+      "type": "string"
+    },
+    "owners": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Owners",
+      "type": "array"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "schedule": {
+      "$ref": "#/$defs/ScheduleSpec"
+    },
+    "timezone": {
+      "default": "UTC",
+      "title": "Timezone",
+      "type": "string"
+    },
+    "start_date": {
+      "default": "2025-01-01T00:00:00Z",
+      "format": "date-time",
+      "title": "Start Date",
+      "type": "string"
+    },
+    "catchup": {
+      "default": false,
+      "title": "Catchup",
+      "type": "boolean"
+    },
+    "concurrency": {
+      "default": 1,
+      "maximum": 64,
+      "minimum": 1,
+      "title": "Concurrency",
+      "type": "integer"
+    },
+    "retry_policy": {
+      "$ref": "#/$defs/RetryPolicy"
+    },
+    "timeout_policy": {
+      "$ref": "#/$defs/TimeoutPolicy"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Parameters",
+      "type": "object"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceSpec"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "destinations": {
+      "items": {
+        "$ref": "#/$defs/DestinationSpec"
+      },
+      "title": "Destinations",
+      "type": "array"
+    },
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/TaskSpec"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "title": "Tasks",
+      "type": "array"
+    },
+    "dependencies": {
+      "items": {
+        "$ref": "#/$defs/Dependency"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "quality_rules": {
+      "items": {
+        "$ref": "#/$defs/QualityRule"
+      },
+      "title": "Quality Rules",
+      "type": "array"
+    },
+    "governance_rules": {
+      "items": {
+        "$ref": "#/$defs/GovernanceRule"
+      },
+      "title": "Governance Rules",
+      "type": "array"
+    },
+    "notifications": {
+      "items": {
+        "$ref": "#/$defs/NotificationPolicy"
+      },
+      "title": "Notifications",
+      "type": "array"
+    },
+    "slas": {
+      "items": {
+        "$ref": "#/$defs/SLASpec"
+      },
+      "title": "Slas",
+      "type": "array"
+    },
+    "lineage": {
+      "items": {
+        "$ref": "#/$defs/LineageEdge"
+      },
+      "title": "Lineage",
+      "type": "array"
+    },
+    "resources": {
+      "$ref": "#/$defs/ResourceSpec"
+    },
+    "secrets": {
+      "items": {
+        "$ref": "#/$defs/SecretReference"
+      },
+      "title": "Secrets",
+      "type": "array"
+    },
+    "execution_policy": {
+      "$ref": "#/$defs/ExecutionPolicy"
+    },
+    "approval_requirements": {
+      "$ref": "#/$defs/ApprovalPolicy"
+    }
+  },
+  "required": [
+    "pipeline_id",
+    "name",
+    "tasks"
+  ],
+  "title": "PipelineSpec",
+  "type": "object"
+}

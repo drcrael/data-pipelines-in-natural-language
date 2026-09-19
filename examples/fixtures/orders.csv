@@ -1,0 +1,5 @@
+order_id,customer_id,amount,region
+1,10,12.5,west
+1,10,12.5,west
+2,20,20.0,east
+3,,4.5,west

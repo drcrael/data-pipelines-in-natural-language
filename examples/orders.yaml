@@ -1,0 +1,109 @@
+approval_requirements:
+  destructive_writes: true
+  external_writes: true
+  production: true
+catchup: false
+concurrency: 1
+dependencies: []
+description: ''
+destinations:
+- asset: analytics
+  key: []
+  mode: replace
+execution_policy:
+  environment: dev
+  idempotent: true
+  schema_evolution: reject
+governance_rules: []
+lineage: []
+name: Daily clean orders
+notifications: []
+owners:
+- data-team
+parameters: {}
+pipeline_id: orders_daily
+quality_rules:
+- action: quarantine
+  field: customer_id
+  id: customer_required
+  kind: not_null
+  max_invalid_rate: 0.0
+  parameters: {}
+  quarantine_asset: quarantine
+  retention_days: null
+  task: deduplicate
+resources:
+  cpu: 1.0
+  max_rows: 100000
+  memory_mb: 512
+retry_policy:
+  delay_seconds: 60
+  exponential_backoff: true
+  retries: 2
+schedule:
+  cron: 0 2 * * *
+secrets: []
+slas: []
+sources:
+- asset: orders
+  incremental_field: null
+  window: all
+start_date: '2025-01-01T00:00:00Z'
+tags: []
+tasks:
+- capability: ingest.csv@1
+  dependencies: []
+  failure_behavior: stop
+  id: read_orders
+  inputs:
+  - asset:orders
+  outputs: []
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: ingestion
+- capability: transform.deduplicate@1
+  dependencies: []
+  failure_behavior: stop
+  id: deduplicate
+  inputs:
+  - task:read_orders
+  outputs: []
+  parameters:
+    keys:
+    - order_id
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: transformation
+- capability: output.jsonl@1
+  dependencies: []
+  failure_behavior: stop
+  id: write_analytics
+  inputs:
+  - task:deduplicate
+  outputs:
+  - asset:analytics
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: output
+timeout_policy:
+  pipeline_seconds: 3600
+  task_seconds: 300
+timezone: UTC
+version: '1.0'
