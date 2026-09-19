@@ -1,0 +1,44 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 251.14718110799998,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Only output tasks may write destinations",
+          "Unresolved input: asset:orders",
+          "Unresolved or non-output destination: asset:analytics"
+        ]
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 136.45264660700002,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Only output tasks may write destinations",
+          "Unresolved input: asset:orders",
+          "Unresolved or non-output destination: asset:analytics"
+        ]
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark."
+}

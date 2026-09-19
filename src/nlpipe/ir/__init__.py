@@ -169,7 +169,7 @@ class PipelineSpec(Model):
     retry_policy: RetryPolicy = Field(default_factory=RetryPolicy)
     timeout_policy: TimeoutPolicy = Field(default_factory=TimeoutPolicy)
     parameters: dict[str, JsonValue] = Field(default_factory=dict)
-    sources: list[SourceSpec] = Field(default_factory=list)
+    sources: list[SourceSpec] = Field(min_length=1)
     destinations: list[DestinationSpec] = Field(default_factory=list)
     tasks: list[TaskSpec] = Field(min_length=1, max_length=200)
     dependencies: list[Dependency] = Field(default_factory=list)
