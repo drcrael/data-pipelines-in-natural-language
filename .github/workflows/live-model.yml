@@ -1,12 +1,19 @@
 name: Live model audit
 on:
   workflow_dispatch:
+    inputs:
+      model:
+        description: Ollama model to evaluate against the unchanged semantic checks
+        required: true
+        default: qwen2.5:7b
 permissions:
   contents: read
 jobs:
   local-model:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      AUDIT_MODEL: ${{ inputs.model }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -20,9 +27,9 @@ jobs:
           sudo systemctl stop ollama || true
           OLLAMA_CONTEXT_LENGTH=16384 ollama serve > /tmp/ollama.log 2>&1 &
           for attempt in $(seq 1 30); do curl -fsS http://127.0.0.1:11434/api/version && break; sleep 2; done
-          ollama pull qwen2.5:7b
+          ollama pull "$AUDIT_MODEL"
           ollama --version
-      - run: python scripts/live_model_smoke.py --out reports/live-model.json
+      - run: python scripts/live_model_smoke.py --model "$AUDIT_MODEL" --out reports/live-model.json
       - run: python scripts/replay_model_report.py reports/live-model.json --out reports/live-model-execution.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

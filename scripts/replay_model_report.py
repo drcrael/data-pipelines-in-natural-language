@@ -31,21 +31,25 @@ for case in report["cases"]:
     with tempfile.TemporaryDirectory(prefix="nlpipe-live-replay-") as directory:
         root = Path(directory)
         shutil.copytree("examples/fixtures", root, dirs_exist_ok=True)
-        run = run_pipeline(spec, catalog, root)
-        output = root / "output/analytics.jsonl"
-        rows = (
-            [json.loads(line) for line in output.read_text().splitlines()]
-            if output.exists()
-            else []
-        )
+        attempts = []
+        for _ in range(2):
+            run = run_pipeline(spec, catalog, root)
+            output = root / "output/analytics.jsonl"
+            rows = (
+                [json.loads(line) for line in output.read_text().splitlines()]
+                if output.exists()
+                else []
+            )
+            attempts.append(run.status.value == "success" and rows == expected)
         results.append(
-            {"case": case["case"], "status": run.status.value, "exact_records": rows == expected}
+            {"case": case["case"], "first_execution": attempts[0], "replace_on_rerun": attempts[1]}
         )
+
 payload = {
     "model": report["model"],
     "cases": results,
     "passed": len(results) == 3
-    and all(r["status"] == "success" and r["exact_records"] for r in results),
+    and all(r["first_execution"] and r["replace_on_rerun"] for r in results),
 }
 args.out.parent.mkdir(parents=True, exist_ok=True)
 args.out.write_text(json.dumps(payload, indent=2) + "\n")
