@@ -48,7 +48,7 @@ for case in report["cases"]:
 payload = {
     "model": report["model"],
     "cases": results,
-    "passed": len(results) == 3
+    "passed": len(results) == 4
     and all(r["first_execution"] and r["replace_on_rerun"] for r in results),
 }
 args.out.parent.mkdir(parents=True, exist_ok=True)

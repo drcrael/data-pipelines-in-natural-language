@@ -5,7 +5,7 @@ on:
       model:
         description: Ollama model to evaluate against the unchanged semantic checks
         required: true
-        default: qwen2.5:7b
+        default: qwen2.5:3b
 permissions:
   contents: read
 jobs:

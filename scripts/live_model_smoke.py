@@ -25,7 +25,7 @@ def execution_contract(spec):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", default="qwen2.5:7b")
+parser.add_argument("--model", default="qwen2.5:3b")
 parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1")
 parser.add_argument("--out", type=Path, required=True)
 args = parser.parse_args()
@@ -114,12 +114,41 @@ if first_spec:
     results.append(
         {"case": "round_trip", "checks": checks, "result": result.model_dump(mode="json")}
     )
+if first_spec:
+    print("Running nondefault operational round-trip", flush=True)
+    nondefault = first_spec.model_copy(deep=True)
+    nondefault.retry_policy.retries = 0
+    nondefault.retry_policy.exponential_backoff = False
+    nondefault.timeout_policy.task_seconds = 120
+    nondefault.timeout_policy.pipeline_seconds = 900
+    started = time.monotonic()
+    result = interpret(
+        "Reconstruct the pipeline described below. Preserve every stated semantic requirement.\n"
+        + explain(nondefault),
+        catalog,
+        provider,
+    )
+    checks = {"ready": result.status == "ready"}
+    if result.spec:
+        checks["operational_round_trip"] = execution_contract(nondefault) == execution_contract(
+            result.spec
+        )
+        checks["airflow"] = verify(result.spec, catalog, airflow=True)["passed"]
+    results.append(
+        {
+            "case": "nondefault_round_trip",
+            "checks": checks,
+            "elapsed_seconds": time.monotonic() - started,
+            "expected_spec": nondefault.model_dump(mode="json"),
+            "result": result.model_dump(mode="json"),
+        }
+    )
 report = {
     "provider": provider.name,
     "model": args.model,
     "cases": results,
-    "passed": len(results) == 3 and all(all(r["checks"].values()) for r in results),
-    "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark.",
+    "passed": len(results) == 4 and all(all(r["checks"].values()) for r in results),
+    "scope": "Two live paraphrases plus default and nondefault explanation round-trips; not a broad LLM accuracy benchmark.",
 }
 args.out.parent.mkdir(parents=True, exist_ok=True)
 args.out.write_text(json.dumps(report, indent=2) + "\n")
