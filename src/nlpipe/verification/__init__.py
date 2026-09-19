@@ -93,9 +93,10 @@ def generated_test(spec: PipelineSpec, catalog: Catalog) -> str:
         raise ValueError("Cannot generate tests for invalid IR")
     edges = sorted((d, t.id) for t in normalized.tasks for d in t.dependencies)
     return f"""import runpy
+from pathlib import Path
 
 def test_generated_dag():
-    dag = runpy.run_path({spec.pipeline_id + ".py"!r})['dag']
+    dag = runpy.run_path(str(Path(__file__).with_name({spec.pipeline_id + ".py"!r})))['dag']
     assert dag.dag_id == {spec.pipeline_id!r}
     assert sorted(dag.task_ids) == {sorted(t.id for t in normalized.tasks)!r}
     assert sorted((t.task_id, d) for t in dag.tasks for d in t.downstream_task_ids) == {edges!r}

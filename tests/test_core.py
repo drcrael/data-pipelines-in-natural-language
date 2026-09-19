@@ -217,3 +217,24 @@ def test_operational_validation(spec, catalog):
     assert validate(spec, catalog).valid
     spec.destinations[0].mode = "upsert"
     assert not validate(spec, catalog).valid
+
+
+@pytest.mark.airflow
+def test_generated_test_portable_path(spec, catalog, tmp_path):
+    import os
+    import subprocess
+    import sys
+
+    dag_path = tmp_path / (spec.pipeline_id + ".py")
+    dag_path.write_text(compile_airflow(spec, catalog))
+    test_path = tmp_path / "test_generated.py"
+    test_path.write_text(generated_test(spec, catalog))
+    process = subprocess.run(
+        [sys.executable, "-m", "pytest", "-q", str(test_path)],
+        cwd=tmp_path.parent,
+        capture_output=True,
+        text=True,
+        timeout=60,
+        env=dict(os.environ, AIRFLOW_HOME=str(tmp_path / "airflow")),
+    )
+    assert process.returncode == 0, process.stdout + process.stderr

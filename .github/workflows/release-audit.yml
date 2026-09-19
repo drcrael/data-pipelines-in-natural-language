@@ -1,0 +1,66 @@
+name: Release artifact audit
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to verify
+        required: true
+        default: v0.1.0
+permissions:
+  contents: read
+jobs:
+  artifact:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.11', '3.14']
+        package: [wheel, source]
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NLPIPE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+      NLPIPE_REPOSITORY: ${{ github.repository }}
+      NLPIPE_PACKAGE: ${{ matrix.package }}
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Fetch exact published artifacts
+        shell: bash
+        run: |
+          gh release download "$NLPIPE_TAG" --repo "$NLPIPE_REPOSITORY" --pattern '*.whl' --pattern '*.tar.gz' --pattern 'SHA256SUMS' --dir artifacts
+          python - <<'PY'
+          import hashlib, pathlib, tarfile
+          root = pathlib.Path('artifacts')
+          for line in (root/'SHA256SUMS').read_text().splitlines():
+              expected, name = line.split(maxsplit=1)
+              path = root / name
+              if path.exists():
+                  assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+          with tarfile.open(next(root.glob('*.tar.gz'))) as archive:
+              archive.extractall('source', filter='data')
+          PY
+      - name: Install and evaluate published package
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, pathlib, subprocess, sys
+          root = pathlib.Path.cwd()
+          extension = '*.whl' if os.environ['NLPIPE_PACKAGE'] == 'wheel' else '*.tar.gz'
+          package = next((root/'artifacts').glob(extension))
+          subprocess.run([sys.executable, '-m', 'pip', 'install', str(package)+'[dev,parquet]'], check=True)
+          source = next((root/'source').iterdir())
+          subprocess.run([sys.executable, '-m', 'pytest', '-q', '--cov=nlpipe', '--cov-report=xml'], cwd=source, check=True)
+          subprocess.run(['nlpipe', 'test', 'examples/orders.yaml', '--catalog', 'examples/catalog.yaml', '--fixture-root', 'examples/fixtures'], cwd=source, check=True)
+          subprocess.run(['nlpipe', 'evaluate', 'corpus/acceptance.json', '--catalog', 'examples/catalog.yaml', '--out', str(root/'reports')], cwd=source, check=True)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: release-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.package }}
+          path: |
+            reports/
+            source/*/coverage.xml
