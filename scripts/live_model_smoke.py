@@ -18,7 +18,21 @@ args = parser.parse_args()
 catalog = load_catalog(Path("examples/catalog.yaml"))
 # A focused catalog is an administrator scope restriction, not an expected answer.
 catalog.assets = [a for a in catalog.assets if a.identifier in {"orders", "analytics"}]
-provider = OpenAICompatibleProvider(
+
+
+class RecordingProvider(OpenAICompatibleProvider):
+    def generate(self, prompt, catalog, previous=None):
+        raw = super().generate(prompt, catalog, previous)
+        # This audit contains synthetic metadata only; never enable raw logging
+        # for arbitrary private prompts in the application itself.
+        raw_path = args.out.parent / "live-model-raw.jsonl"
+        raw_path.parent.mkdir(parents=True, exist_ok=True)
+        with raw_path.open("a") as stream:
+            stream.write(json.dumps(raw) + "\n")
+        return raw
+
+
+provider = RecordingProvider(
     ProviderConfig(base_url=args.base_url, model=args.model, json_schema=True, timeout_seconds=900)
 )
 requests = [

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import ipaddress
 import json
 import os
@@ -93,11 +94,47 @@ class OpenAICompatibleProvider:
         # Candidate graphs use task input references; this prevents redundant, contradictory
         # top-level edges. The full IR still supports explicit edges for trusted authors.
         schema["$defs"]["PipelineSpec"]["properties"]["dependencies"]["maxItems"] = 0
-        schema["$defs"]["TaskSpec"]["properties"]["capability"]["enum"] = [
-            c["reference"] for c in capabilities
-        ]
         readable = [a.identifier for a in catalog.assets if "read" in a.allowed_operations]
         writable = [a.identifier for a in catalog.assets if "write" in a.allowed_operations]
+        # Encode existing role rules into the generation grammar, without granting
+        # authority or replacing independent semantic validation of the returned IR.
+        task_schema = schema["$defs"]["TaskSpec"]
+        variants = []
+        for family in sorted({c["type"] for c in capabilities}):
+            variant = copy.deepcopy(task_schema)
+            props = variant["properties"]
+            props["type"] = {"const": family, "type": "string"}
+            props["capability"]["enum"] = [
+                c["reference"] for c in capabilities if c["type"] == family
+            ]
+            variant["required"] = ["id", "type", "capability", "inputs", "outputs", "parameters"]
+            props["inputs"]["minItems"] = 1
+            if family == "ingestion":
+                props["inputs"].update(
+                    maxItems=1, items={"type": "string", "enum": ["asset:" + a for a in readable]}
+                )
+            else:
+                props["inputs"]["items"] = {
+                    "type": "string",
+                    "pattern": r"^task:[a-z][a-z0-9_]{0,62}$",
+                }
+            if family == "output":
+                props["outputs"].update(
+                    minItems=1,
+                    maxItems=1,
+                    items={"type": "string", "enum": ["asset:" + a for a in writable]},
+                )
+            else:
+                props["outputs"]["maxItems"] = 0
+            if family in {"ingestion", "output"}:
+                props["parameters"] = {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": False,
+                }
+            if (family != "ingestion" or readable) and (family != "output" or writable):
+                variants.append(variant)
+        schema["$defs"]["TaskSpec"] = {"anyOf": variants}
         if readable:
             schema["$defs"]["SourceSpec"]["properties"]["asset"]["enum"] = readable
         if writable:

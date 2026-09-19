@@ -23,6 +23,7 @@ jobs:
           ollama pull qwen2.5:7b
           ollama --version
       - run: python scripts/live_model_smoke.py --out reports/live-model.json
+      - run: python scripts/replay_model_report.py reports/live-model.json --out reports/live-model-execution.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

@@ -285,10 +285,26 @@ def test_model_candidate_schema_is_registry_scoped(catalog, spec):
         payload = json.loads(request.content)
         schema = payload["response_format"]["json_schema"]["schema"]
         assert schema["$defs"]["PipelineSpec"]["properties"]["dependencies"]["maxItems"] == 0
-        assert (
-            "enrich.embeddings@1"
-            not in schema["$defs"]["TaskSpec"]["properties"]["capability"]["enum"]
+        variants = schema["$defs"]["TaskSpec"]["anyOf"]
+        assert all(
+            "enrich.embeddings@1" not in v["properties"]["capability"]["enum"] for v in variants
         )
+        from jsonschema import Draft202012Validator
+
+        validator = Draft202012Validator(schema)
+        good = {"status": "ready", "spec": spec.model_dump(mode="json")}
+        assert validator.is_valid(good)
+        from copy import deepcopy
+
+        bad = deepcopy(good)
+        bad["spec"]["tasks"][0]["outputs"] = ["asset:analytics"]
+        assert not validator.is_valid(bad)
+        bad = deepcopy(good)
+        bad["spec"]["tasks"][-1]["inputs"] = ["asset:orders"]
+        assert not validator.is_valid(bad)
+        bad = deepcopy(good)
+        bad["spec"]["tasks"][-1]["outputs"] = ["asset:orders"]
+        assert not validator.is_valid(bad)
         assert "orders" in schema["$defs"]["SourceSpec"]["properties"]["asset"]["enum"]
         assert payload["max_tokens"] == 4096
         return httpx.Response(
