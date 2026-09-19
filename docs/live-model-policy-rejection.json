@@ -1,0 +1,297 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 214.275208277,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Unresolved or non-output destination: asset:analytics"
+        ]
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": true,
+        "sources": true,
+        "destinations": true,
+        "schedule": true,
+        "capabilities": true,
+        "mode": true,
+        "validation": true,
+        "airflow": true
+      },
+      "elapsed_seconds": 23.70196129200002,
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "orders_copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "approved"
+          },
+          "approval_requirements": {
+            "production": false,
+            "external_writes": false,
+            "destructive_writes": false
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    },
+    {
+      "case": "round_trip",
+      "checks": {
+        "ready": true,
+        "semantic_round_trip": true
+      },
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "orders_copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 64,
+            "max_rows": 1000000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": false,
+            "schema_evolution": "approved"
+          },
+          "approval_requirements": {
+            "production": false,
+            "external_writes": false,
+            "destructive_writes": false
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark."
+}

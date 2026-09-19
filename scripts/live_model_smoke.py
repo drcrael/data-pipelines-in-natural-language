@@ -10,6 +10,20 @@ from nlpipe.intent import OpenAICompatibleProvider, ProviderConfig, explain, int
 from nlpipe.validation import validate
 from nlpipe.verification import verify
 
+
+def execution_contract(spec):
+    """Compare effective execution semantics, including inherited task settings."""
+    body = spec.model_dump(mode="json")
+    for field in ["name", "description", "lineage"]:
+        body.pop(field)
+    for task in body["tasks"]:
+        if task["retries"] is None:
+            task["retries"] = spec.retry_policy.retries
+        if task["timeout"] is None:
+            task["timeout"] = spec.timeout_policy.task_seconds
+    return body
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", default="qwen2.5:7b")
 parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1")
@@ -49,6 +63,7 @@ for index, prompt in enumerate(requests):
     if result.spec:
         spec = result.spec
         checks.update(
+            identity=spec.pipeline_id == "orders_copy",
             sources=[s.asset for s in spec.sources] == ["orders"],
             destinations=[d.asset for d in spec.destinations] == ["analytics"],
             schedule=spec.schedule.cron is None,
@@ -56,6 +71,10 @@ for index, prompt in enumerate(requests):
             == ["ingest.csv@1", "output.jsonl@1"],
             mode=spec.destinations[0].mode == "replace",
             validation=validate(spec, catalog).valid,
+            policy=spec.execution_policy.environment == "dev"
+            and spec.execution_policy.idempotent
+            and spec.execution_policy.schema_evolution == "reject"
+            and not validate(spec, catalog).requires_approval,
             airflow=verify(spec, catalog, airflow=True)["passed"],
         )
         if first_spec is None:
@@ -85,6 +104,9 @@ if first_spec:
             type("Result", (), {"spec": first_spec, "status": "ready", "questions": []})(), catalog
         )
         actual = properties(result, catalog)
+        checks["operational_round_trip"] = execution_contract(first_spec) == execution_contract(
+            result.spec
+        )
         checks["semantic_round_trip"] = all(
             expected[k] == actual[k]
             for k in ["assets", "capabilities", "schedule", "quality", "policy", "graph"]

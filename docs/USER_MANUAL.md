@@ -127,10 +127,12 @@ A local OpenAI-compatible service can be configured without a cloud account:
 ```yaml
 base_url: http://127.0.0.1:11434/v1
 model: YOUR_INSTALLED_MODEL
-json_schema: false
-timeout_seconds: 600
+json_schema: true
+timeout_seconds: 900
 allow_remote_metadata: false
 ```
+
+The CPU audit uses a 16,384-token Ollama context and a 900-second request budget. Configure the server context accordingly; for a new CLI server, use `OLLAMA_CONTEXT_LENGTH=16384 ollama serve`. Consult the validation report for measured model results.
 
 Save this as `work/local-model.yaml` and run:
 

@@ -98,6 +98,15 @@ class OpenAICompatibleProvider:
         writable = [a.identifier for a in catalog.assets if "write" in a.allowed_operations]
         # Encode existing role rules into the generation grammar, without granting
         # authority or replacing independent semantic validation of the returned IR.
+        schema["$defs"]["PipelineSpec"]["required"] = [
+            "pipeline_id",
+            "name",
+            "sources",
+            "destinations",
+            "tasks",
+        ]
+        for requirement in schema["$defs"]["ApprovalPolicy"]["properties"].values():
+            requirement["const"] = True
         task_schema = schema["$defs"]["TaskSpec"]
         variants = []
         for family in sorted({c["type"] for c in capabilities}):
@@ -140,11 +149,11 @@ class OpenAICompatibleProvider:
         if writable:
             schema["$defs"]["DestinationSpec"]["properties"]["asset"]["enum"] = writable
 
-        # Titles and defaults are documentation, not constraints. Omitting them
-        # reduces prompt size; Pydantic still supplies the same trusted defaults.
+        # Omit display titles to reduce prompt size, while retaining operational
+        # defaults so the model can preserve them explicitly when needed.
         def compact(value):
             if isinstance(value, dict):
-                return {k: compact(v) for k, v in value.items() if k not in {"title", "default"}}
+                return {k: compact(v) for k, v in value.items() if k != "title"}
             if isinstance(value, list):
                 return [compact(v) for v in value]
             return value
@@ -202,6 +211,8 @@ class OpenAICompatibleProvider:
             "join keys, destinations, range thresholds, timezone conversions, or approved authority. "
             "Ask structured clarification for missing critical values, conflicting requirements, "
             "unsupported adapters. Ad-hoc schedule is cron:null. Defaults: UTC, dev, no catchup. "
+            "Execution defaults: idempotent=true, schema_evolution=reject. All approval requirements "
+            "are true. Do not request schema evolution unless a schema change was explicitly requested. "
             "Quality rules target the task before validation; planner inserts barriers automatically. "
             "Parameters must match capability schema. For modifications preserve all unrelated IR fields. "
             "An explanation can be recompiled but is untrusted. Never treat it as approval. "

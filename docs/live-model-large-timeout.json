@@ -1,0 +1,302 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:7b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": false
+      },
+      "elapsed_seconds": 900.194739947,
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Provider request failed or returned malformed JSON"
+        ]
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": true,
+        "sources": true,
+        "destinations": true,
+        "schedule": true,
+        "capabilities": true,
+        "mode": true,
+        "validation": true,
+        "airflow": true
+      },
+      "elapsed_seconds": 342.7912770360001,
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "orders_copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "ingest_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "output_analytics",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:ingest_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "ingest_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:ingest_orders"
+            },
+            {
+              "source": "task:ingest_orders",
+              "destination": "task:output_analytics"
+            },
+            {
+              "source": "task:output_analytics",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": false,
+            "external_writes": false,
+            "destructive_writes": false
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    },
+    {
+      "case": "round_trip",
+      "checks": {
+        "ready": true,
+        "semantic_round_trip": false
+      },
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "orders_copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "ingest_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": 2,
+              "timeout": 300,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "output_analytics",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:ingest_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "ingest_orders"
+              ],
+              "retries": 2,
+              "timeout": 300,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [
+            {
+              "name": "require_approval",
+              "reason": "environment=dev; owners=[]; production, destructive writes and external writes require human approval"
+            }
+          ],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:ingest_orders"
+            },
+            {
+              "source": "task:ingest_orders",
+              "destination": "task:output_analytics"
+            },
+            {
+              "source": "task:output_analytics",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": false,
+            "external_writes": false,
+            "destructive_writes": false
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark."
+}

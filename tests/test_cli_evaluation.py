@@ -200,3 +200,28 @@ def test_full_ir_goldens(fixture, prompt, catalog):
     result = interpret(prompt, catalog, ControlledProvider())
     assert result.status == "ready"
     assert result.spec == expected
+
+
+@pytest.mark.parametrize(
+    "path,value",
+    [
+        ("concurrency", 2),
+        ("retry_policy.delay_seconds", 90),
+        ("retry_policy.exponential_backoff", False),
+        ("timeout_policy.pipeline_seconds", 7200),
+        ("resources.memory_mb", 1024),
+        ("execution_policy.idempotent", False),
+        ("execution_policy.schema_evolution", "approved"),
+        ("tasks.0.retries", 4),
+        ("tasks.0.resources.memory_mb", 1024),
+        ("destinations.0.key", ["order_id"]),
+    ],
+)
+def test_explanation_preserves_operational_distinctions(spec, path, value):
+    before = explain(spec)
+    parts = path.split(".")
+    target = spec
+    for part in parts[:-1]:
+        target = target[int(part)] if part.isdigit() else getattr(target, part)
+    setattr(target, parts[-1], value)
+    assert explain(spec) != before
