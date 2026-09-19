@@ -1,0 +1,681 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": true,
+        "identity": true,
+        "sources": true,
+        "destinations": true,
+        "schedule": true,
+        "capabilities": true,
+        "mode": true,
+        "validation": true,
+        "policy": true,
+        "airflow": true
+      },
+      "elapsed_seconds": 189.39386693399996,
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "Orders Copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": true,
+            "external_writes": true,
+            "destructive_writes": true
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": true,
+        "identity": true,
+        "sources": true,
+        "destinations": true,
+        "schedule": true,
+        "capabilities": true,
+        "mode": true,
+        "validation": true,
+        "policy": true,
+        "airflow": true
+      },
+      "elapsed_seconds": 38.849959445000025,
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "Orders Copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": true,
+            "external_writes": true,
+            "destructive_writes": true
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    },
+    {
+      "case": "round_trip",
+      "checks": {
+        "ready": true,
+        "operational_round_trip": true,
+        "semantic_round_trip": true
+      },
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "Orders Copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 2,
+            "delay_seconds": 60,
+            "exponential_backoff": true
+          },
+          "timeout_policy": {
+            "task_seconds": 300,
+            "pipeline_seconds": 3600
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": true,
+            "external_writes": true,
+            "destructive_writes": true
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    },
+    {
+      "case": "nondefault_round_trip",
+      "checks": {
+        "ready": true,
+        "operational_round_trip": true,
+        "airflow": true
+      },
+      "elapsed_seconds": 42.30144080900004,
+      "expected_spec": {
+        "version": "1.0",
+        "pipeline_id": "orders_copy",
+        "name": "Orders Copy",
+        "description": "",
+        "owners": [],
+        "tags": [],
+        "schedule": {
+          "cron": null
+        },
+        "timezone": "UTC",
+        "start_date": "2025-01-01T00:00:00Z",
+        "catchup": false,
+        "concurrency": 1,
+        "retry_policy": {
+          "retries": 0,
+          "delay_seconds": 60,
+          "exponential_backoff": false
+        },
+        "timeout_policy": {
+          "task_seconds": 120,
+          "pipeline_seconds": 900
+        },
+        "parameters": {},
+        "sources": [
+          {
+            "asset": "orders",
+            "incremental_field": null,
+            "window": "all"
+          }
+        ],
+        "destinations": [
+          {
+            "asset": "analytics",
+            "mode": "replace",
+            "key": []
+          }
+        ],
+        "tasks": [
+          {
+            "id": "read_orders",
+            "type": "ingestion",
+            "capability": "ingest.csv@1",
+            "inputs": [
+              "asset:orders"
+            ],
+            "outputs": [],
+            "parameters": {},
+            "dependencies": [],
+            "retries": null,
+            "timeout": null,
+            "resources": {
+              "cpu": 1.0,
+              "memory_mb": 512,
+              "max_rows": 100000
+            },
+            "failure_behavior": "stop",
+            "quality_checks": []
+          },
+          {
+            "id": "write_orders",
+            "type": "output",
+            "capability": "output.jsonl@1",
+            "inputs": [
+              "task:read_orders"
+            ],
+            "outputs": [
+              "asset:analytics"
+            ],
+            "parameters": {},
+            "dependencies": [
+              "read_orders"
+            ],
+            "retries": null,
+            "timeout": null,
+            "resources": {
+              "cpu": 1.0,
+              "memory_mb": 512,
+              "max_rows": 100000
+            },
+            "failure_behavior": "stop",
+            "quality_checks": []
+          }
+        ],
+        "dependencies": [],
+        "quality_rules": [],
+        "governance_rules": [],
+        "notifications": [],
+        "slas": [],
+        "lineage": [
+          {
+            "source": "asset:orders",
+            "destination": "task:read_orders"
+          },
+          {
+            "source": "task:read_orders",
+            "destination": "task:write_orders"
+          },
+          {
+            "source": "task:write_orders",
+            "destination": "asset:analytics"
+          }
+        ],
+        "resources": {
+          "cpu": 1.0,
+          "memory_mb": 512,
+          "max_rows": 100000
+        },
+        "secrets": [],
+        "execution_policy": {
+          "environment": "dev",
+          "idempotent": true,
+          "schema_evolution": "reject"
+        },
+        "approval_requirements": {
+          "production": true,
+          "external_writes": true,
+          "destructive_writes": true
+        }
+      },
+      "result": {
+        "status": "ready",
+        "intent": "",
+        "spec": {
+          "version": "1.0",
+          "pipeline_id": "orders_copy",
+          "name": "Orders Copy",
+          "description": "",
+          "owners": [],
+          "tags": [],
+          "schedule": {
+            "cron": null
+          },
+          "timezone": "UTC",
+          "start_date": "2025-01-01T00:00:00Z",
+          "catchup": false,
+          "concurrency": 1,
+          "retry_policy": {
+            "retries": 0,
+            "delay_seconds": 60,
+            "exponential_backoff": false
+          },
+          "timeout_policy": {
+            "task_seconds": 120,
+            "pipeline_seconds": 900
+          },
+          "parameters": {},
+          "sources": [
+            {
+              "asset": "orders",
+              "incremental_field": null,
+              "window": "all"
+            }
+          ],
+          "destinations": [
+            {
+              "asset": "analytics",
+              "mode": "replace",
+              "key": []
+            }
+          ],
+          "tasks": [
+            {
+              "id": "read_orders",
+              "type": "ingestion",
+              "capability": "ingest.csv@1",
+              "inputs": [
+                "asset:orders"
+              ],
+              "outputs": [],
+              "parameters": {},
+              "dependencies": [],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            },
+            {
+              "id": "write_orders",
+              "type": "output",
+              "capability": "output.jsonl@1",
+              "inputs": [
+                "task:read_orders"
+              ],
+              "outputs": [
+                "asset:analytics"
+              ],
+              "parameters": {},
+              "dependencies": [
+                "read_orders"
+              ],
+              "retries": null,
+              "timeout": null,
+              "resources": {
+                "cpu": 1.0,
+                "memory_mb": 512,
+                "max_rows": 100000
+              },
+              "failure_behavior": "stop",
+              "quality_checks": []
+            }
+          ],
+          "dependencies": [],
+          "quality_rules": [],
+          "governance_rules": [],
+          "notifications": [],
+          "slas": [],
+          "lineage": [
+            {
+              "source": "asset:orders",
+              "destination": "task:read_orders"
+            },
+            {
+              "source": "task:read_orders",
+              "destination": "task:write_orders"
+            },
+            {
+              "source": "task:write_orders",
+              "destination": "asset:analytics"
+            }
+          ],
+          "resources": {
+            "cpu": 1.0,
+            "memory_mb": 512,
+            "max_rows": 100000
+          },
+          "secrets": [],
+          "execution_policy": {
+            "environment": "dev",
+            "idempotent": true,
+            "schema_evolution": "reject"
+          },
+          "approval_requirements": {
+            "production": true,
+            "external_writes": true,
+            "destructive_writes": true
+          }
+        },
+        "questions": [],
+        "errors": []
+      }
+    }
+  ],
+  "passed": true,
+  "scope": "Two live paraphrases plus default and nondefault explanation round-trips; not a broad LLM accuracy benchmark."
+}

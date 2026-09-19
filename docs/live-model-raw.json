@@ -1,0 +1,229 @@
+[
+  {
+    "status": "ready",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "Orders Copy",
+      "retry_policy": {
+        "retries": 2,
+        "delay_seconds": 60,
+        "exponential_backoff": true
+      },
+      "timeout_policy": {
+        "task_seconds": 300,
+        "pipeline_seconds": 3600
+      },
+      "sources": [
+        {
+          "asset": "orders"
+        }
+      ],
+      "destinations": [
+        {
+          "asset": "analytics",
+          "mode": "replace"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "read_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {}
+        },
+        {
+          "id": "write_orders",
+          "type": "output",
+          "capability": "output.jsonl@1",
+          "inputs": [
+            "task:read_orders"
+          ],
+          "outputs": [
+            "asset:analytics"
+          ],
+          "parameters": {}
+        }
+      ],
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      }
+    },
+    "errors": []
+  },
+  {
+    "status": "ready",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "Orders Copy",
+      "retry_policy": {
+        "retries": 2,
+        "delay_seconds": 60,
+        "exponential_backoff": true
+      },
+      "timeout_policy": {
+        "task_seconds": 300,
+        "pipeline_seconds": 3600
+      },
+      "sources": [
+        {
+          "asset": "orders"
+        }
+      ],
+      "destinations": [
+        {
+          "asset": "analytics",
+          "mode": "replace"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "read_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {}
+        },
+        {
+          "id": "write_orders",
+          "type": "output",
+          "capability": "output.jsonl@1",
+          "inputs": [
+            "task:read_orders"
+          ],
+          "outputs": [
+            "asset:analytics"
+          ],
+          "parameters": {}
+        }
+      ],
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      }
+    }
+  },
+  {
+    "status": "ready",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "Orders Copy",
+      "retry_policy": {
+        "retries": 2,
+        "delay_seconds": 60,
+        "exponential_backoff": true
+      },
+      "timeout_policy": {
+        "task_seconds": 300,
+        "pipeline_seconds": 3600
+      },
+      "sources": [
+        {
+          "asset": "orders"
+        }
+      ],
+      "destinations": [
+        {
+          "asset": "analytics",
+          "mode": "replace"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "read_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {}
+        },
+        {
+          "id": "write_orders",
+          "type": "output",
+          "capability": "output.jsonl@1",
+          "inputs": [
+            "task:read_orders"
+          ],
+          "outputs": [
+            "asset:analytics"
+          ],
+          "parameters": {}
+        }
+      ],
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      }
+    },
+    "errors": []
+  },
+  {
+    "status": "ready",
+    "spec": {
+      "pipeline_id": "orders_copy",
+      "name": "Orders Copy",
+      "retry_policy": {
+        "retries": 0,
+        "delay_seconds": 60,
+        "exponential_backoff": false
+      },
+      "timeout_policy": {
+        "task_seconds": 120,
+        "pipeline_seconds": 900
+      },
+      "sources": [
+        {
+          "asset": "orders"
+        }
+      ],
+      "destinations": [
+        {
+          "asset": "analytics",
+          "mode": "replace"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "read_orders",
+          "type": "ingestion",
+          "capability": "ingest.csv@1",
+          "inputs": [
+            "asset:orders"
+          ],
+          "outputs": [],
+          "parameters": {}
+        },
+        {
+          "id": "write_orders",
+          "type": "output",
+          "capability": "output.jsonl@1",
+          "inputs": [
+            "task:read_orders"
+          ],
+          "outputs": [
+            "asset:analytics"
+          ],
+          "parameters": {}
+        }
+      ],
+      "execution_policy": {
+        "environment": "dev",
+        "idempotent": true,
+        "schema_evolution": "reject"
+      }
+    },
+    "errors": []
+  }
+]

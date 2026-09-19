@@ -31,7 +31,7 @@ nlpipe --help
 
 On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`. Use `python` commands directly; the Python CLI is portable. Airflow execution is tested on Linux. A Windows or macOS workstation can author, validate, compile, and locally test pipelines, then deploy to a Linux Airflow environment.
 
-For the tested Airflow runtime:
+Use a Python 3.12 environment for the tested Airflow runtime below. Airflow 3.1.8 requires Python below 3.14; the base CLI also supports Python 3.14.
 
 ```bash
 python -m pip install "apache-airflow==3.1.8"
@@ -239,7 +239,7 @@ The corpus contains 50 requests, including the specified classes of simple, comp
 
 Results are saved as `eval-results.json` and `eval-report.md`. Each semantic dimension reports its own numerator and denominator; unscored dimensions do not count as passes. Run the same command with `--config` to compare a real model against the corpus. The mock provider is for boundary tests only and must never be reported as model accuracy.
 
-Within each of three canonical pipeline groups, six paraphrases must normalize to equivalent offline IR. The optional live audit runs two paraphrases and an explanation round-trip through an actual local model. Property tests cover dependency ordering and unknown capabilities. Security tests block network access and use controlled HTTP transports. Integration tests check exact output records and real Airflow imports; the release report distinguishes executed gates from configured future checks.
+Within each of three canonical pipeline groups, six paraphrases must normalize to equivalent offline IR. The optional live audit runs two paraphrases and default/nondefault explanation round-trips through an actual local model. Property tests cover dependency ordering and unknown capabilities. Security tests block network access and use controlled HTTP transports. Integration tests check exact output records and real Airflow imports; the release report distinguishes executed gates from configured future checks.
 
 ## 12. Troubleshooting and operational limits
 

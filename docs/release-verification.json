@@ -1,0 +1,62 @@
+{
+  "version": "0.1.0",
+  "code_commit": "bb82da1",
+  "python": "3.12.14",
+  "platform": "Linux",
+  "unit_integration_acceptance": {
+    "passed": 134,
+    "skipped": 0,
+    "coverage_percent": 90.44
+  },
+  "security": {
+    "passed": 40
+  },
+  "ruff": "pass",
+  "mypy": {
+    "status": "pass",
+    "source_files": 18
+  },
+  "clean_artifact_installs": {
+    "wheel": {
+      "passed": 131,
+      "skipped_optional_airflow": 3,
+      "coverage_percent": 88.68,
+      "fixture_execution": "pass",
+      "corpus": "50/50"
+    },
+    "source": {
+      "passed": 131,
+      "skipped_optional_airflow": 3,
+      "coverage_percent": 88.68,
+      "fixture_execution": "pass",
+      "corpus": "50/50"
+    }
+  },
+  "airflow": {
+    "version": "3.1.8",
+    "real_import_and_graph": "pass",
+    "full_dag_test": "pass",
+    "output_rows": 2
+  },
+  "controlled_corpus": {
+    "cases": 50,
+    "passed": 50,
+    "accepted": 20,
+    "clarify_or_reject": 30,
+    "scope": "Controlled frontend; not LLM accuracy"
+  },
+  "paraphrases": {
+    "cases": 18,
+    "canonical_groups": 3,
+    "scope": "Controlled frontend and independent full IR goldens"
+  },
+  "cross_platform_ci": "https://github.com/drcrael/data-pipelines-in-natural-language/actions/runs/35476525015",
+  "live_model": {
+    "model": "qwen2.5:3b",
+    "passed": true,
+    "inference_cases": 4,
+    "exact_record_executions": 8,
+    "workflow": "https://github.com/drcrael/data-pipelines-in-natural-language/actions/runs/35476525178",
+    "scope": "Development acceptance smoke test; not a held-out general-language benchmark"
+  }
+}

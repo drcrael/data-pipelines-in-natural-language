@@ -28,7 +28,7 @@ nlpipe test examples/orders.yaml --catalog examples/catalog.yaml \
 
 On Windows, activate with `.venv\Scripts\Activate.ps1`. The default frontend works offline with a limited vocabulary. For broader language understanding, configure a local or explicitly authorized remote OpenAI-compatible model; see the manual. Mock-provider results are never presented as model accuracy.
 
-To check the generated artifact with the tested Airflow version:
+Use a Python 3.12 environment to check the generated artifact with the tested Airflow version below. Airflow 3.1.8 requires Python below 3.14; the base CLI also supports Python 3.14.
 
 ```bash
 python -m pip install "apache-airflow==3.1.8"

@@ -1,0 +1,26 @@
+{
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "first_execution": true,
+      "replace_on_rerun": true
+    },
+    {
+      "case": 2,
+      "first_execution": true,
+      "replace_on_rerun": true
+    },
+    {
+      "case": "round_trip",
+      "first_execution": true,
+      "replace_on_rerun": true
+    },
+    {
+      "case": "nondefault_round_trip",
+      "first_execution": true,
+      "replace_on_rerun": true
+    }
+  ],
+  "passed": true
+}
