@@ -202,3 +202,20 @@ def test_notifications(spec, catalog, data_root):
     assert run.status == RunStatus.SUCCESS
     events = [json.loads(p.read_text())["event"] for p in (data_root / "outbox").glob("*.json")]
     assert sorted(events) == ["quality", "success"]
+
+
+def test_multisource_join_aggregate_fanout(catalog, data_root):
+    from pathlib import Path
+
+    from nlpipe.ir import load
+
+    spec = load(Path(__file__).parents[1] / "examples/region_revenue.yaml")
+    run = run_pipeline(spec, catalog, data_root)
+    assert run.status == RunStatus.SUCCESS
+    expected = [{"region": "east", "revenue": 20.0}, {"region": "west", "revenue": 12.5}]
+    assert [
+        json.loads(line) for line in (data_root / "output/analytics.jsonl").read_text().splitlines()
+    ] == expected
+    import pyarrow.parquet as pq
+
+    assert pq.read_table(data_root / "output/data.parquet").to_pylist() == expected

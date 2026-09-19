@@ -4,7 +4,7 @@ This release is a production-oriented reference implementation for bounded data 
 
 ## Language and evaluation
 
-The offline frontend implements a limited compositional vocabulary. It has no language model and no corpus lookup. The 50-case offline corpus contains 20 accepted cases with exact semantic checks and 30 clarification/rejection cases, including requests whose integrations are unavailable. Six paraphrases check normalization invariance. These results do not establish broad language understanding. Richer requests require an OpenAI-compatible model or explicit IR authoring and representative semantic evaluation. Model output can be structurally valid and semantically wrong; review remains necessary.
+The offline frontend implements a limited compositional vocabulary. It has no language model and no corpus lookup. The 50-case offline corpus contains 20 accepted cases with exact semantic checks and 30 clarification/rejection cases, including requests whose integrations are unavailable. Eighteen paraphrases across three canonical pipelines check normalization invariance. These results do not establish broad language understanding. Richer requests require an OpenAI-compatible model or explicit IR authoring and representative semantic evaluation. Model output can be structurally valid and semantically wrong; review remains necessary.
 
 Mock providers test protocol and validation boundaries only. The separate live-model smoke audit has a narrow, explicitly reported scope. The complete corpus can be evaluated with any configured model using `nlpipe evaluate --config`; full cross-model quality is not established by a smoke test. Automatic model-output correction/retry is intentionally absent.
 

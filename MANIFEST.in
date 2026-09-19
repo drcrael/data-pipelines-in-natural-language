@@ -1,5 +1,5 @@
-include LICENSE README.md VALIDATION.md LIMITATIONS.md SECURITY.md CONTRIBUTING.md
-recursive-include docs *.md *.pdf *.json
+include LICENSE README.md VALIDATION.md LIMITATIONS.md SECURITY.md CONTRIBUTING.md DELIVERY_CHECKLIST.md
+recursive-include docs *.md *.pdf *.json *.txt
 recursive-include examples *.yaml *.json *.jsonl *.csv
 recursive-include corpus *.json
 recursive-include tests *.py

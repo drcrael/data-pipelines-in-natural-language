@@ -220,3 +220,91 @@ def test_plaintext_provider_error_redaction(catalog):
     )
     assert result.status == "rejected"
     assert "hunter2" not in result.model_dump_json()
+
+
+def test_runtime_http_permissions_and_secret_reference(tmp_path, monkeypatch):
+    from nlpipe.catalog import Asset
+    from nlpipe.ir import SecretReference
+    from nlpipe.runtime import storage
+    from nlpipe.runtime.storage import read
+
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        assert request.headers["Authorization"] == "Bearer synthetic-test-token"
+        return httpx.Response(200, json=[{"id": 1}])
+
+    original = httpx.Client
+
+    def client(**kwargs):
+        assert kwargs["follow_redirects"] is False
+        assert kwargs["trust_env"] is False
+        return original(**kwargs, transport=httpx.MockTransport(handler))
+
+    monkeypatch.setattr(storage.httpx, "Client", client)
+    monkeypatch.setenv("TEST_API_TOKEN", "synthetic-test-token")
+    asset = Asset(
+        identifier="api",
+        type="http",
+        location="https://example.test/data",
+        credential_reference=SecretReference(name="api_key_ref", key="TEST_API_TOKEN"),
+    )
+    with pytest.raises(ValueError):
+        read(asset, tmp_path, 10)
+    assert not calls
+    assert read(asset, tmp_path, 10, allow_http=True) == [{"id": 1}]
+    assert len(calls) == 1
+    monkeypatch.delenv("TEST_API_TOKEN")
+    with pytest.raises(ValueError):
+        read(asset, tmp_path, 10, allow_http=True)
+    assert len(calls) == 1
+
+
+def test_sql_values_are_bound(tmp_path):
+    from nlpipe.catalog import Asset
+    from nlpipe.runtime.storage import read, write
+
+    asset = Asset(
+        identifier="sql",
+        type="sqlite",
+        location="test.db",
+        table="records",
+        schema={"id": "integer", "name": "string"},
+        allowed_operations=["read", "write"],
+    )
+    rows = [{"id": 1, "name": "'); DROP TABLE records; --"}]
+    write(asset, tmp_path, rows)
+    assert read(asset, tmp_path, 10) == rows
+
+
+def test_model_candidate_schema_is_registry_scoped(catalog, spec):
+    def handler(request):
+        payload = json.loads(request.content)
+        schema = payload["response_format"]["json_schema"]["schema"]
+        assert schema["$defs"]["PipelineSpec"]["properties"]["dependencies"]["maxItems"] == 0
+        assert (
+            "enrich.embeddings@1"
+            not in schema["$defs"]["TaskSpec"]["properties"]["capability"]["enum"]
+        )
+        assert "orders" in schema["$defs"]["SourceSpec"]["properties"]["asset"]["enum"]
+        assert payload["max_tokens"] == 4096
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {"status": "ready", "spec": spec.model_dump(mode="json")}
+                            )
+                        }
+                    }
+                ]
+            },
+        )
+
+    provider = OpenAICompatibleProvider(
+        ProviderConfig(base_url="http://127.0.0.1/v1", model="test"), httpx.MockTransport(handler)
+    )
+    assert interpret("Load orders", catalog, provider).status == "ready"

@@ -134,8 +134,12 @@ class TaskSpec(Model):
     id: Identifier
     type: Literal["ingestion", "transformation", "quality", "enrichment", "output", "operations"]
     capability: str = Field(pattern=r"^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*@1$")
-    inputs: list[str] = Field(default_factory=list)
-    outputs: list[str] = Field(default_factory=list)
+    inputs: list[Annotated[str, Field(pattern=r"^(asset|task):[a-z][a-z0-9_]{0,62}$")]] = Field(
+        default_factory=list
+    )
+    outputs: list[Annotated[str, Field(pattern=r"^asset:[a-z][a-z0-9_]{0,62}$")]] = Field(
+        default_factory=list
+    )
     parameters: dict[str, JsonValue] = Field(default_factory=dict)
     dependencies: list[Identifier] = Field(default_factory=list)
     retries: int | None = Field(default=None, ge=0, le=10)

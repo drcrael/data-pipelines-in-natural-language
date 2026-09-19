@@ -9,5 +9,27 @@
       "At 2 AM each day copy orders to analytics.",
       "Process orders into analytics every night at 02:00."
     ]
+  },
+  {
+    "canonical_id": "deduplicate_orders_0200",
+    "requests": [
+      "Read orders, deduplicate using order_id, and write analytics daily at 2 AM.",
+      "Every day at 02:00 read orders, remove duplicates using order_id, then write analytics.",
+      "Each day at two in the morning, deduplicate orders by order_id and publish to analytics.",
+      "At 2 AM copy orders to analytics after removing duplicates using order_id.",
+      "Process orders nightly at 2 AM, deduplicate by order_id, output analytics.",
+      "Every night at 02:00 remove duplicates from orders using order_id and load analytics."
+    ]
+  },
+  {
+    "canonical_id": "quarantine_missing_customer",
+    "requests": [
+      "Load orders into analytics; quarantine records without customer_id.",
+      "Read orders and quarantine records missing customer_id before writing analytics.",
+      "Copy orders to analytics, but quarantine records without customer_id.",
+      "Ingest orders; records without customer_id should go to quarantine; write analytics.",
+      "Publish orders into analytics after sending records missing customer_id to quarantine.",
+      "Process orders for analytics and quarantine records with null customer_id."
+    ]
   }
 ]

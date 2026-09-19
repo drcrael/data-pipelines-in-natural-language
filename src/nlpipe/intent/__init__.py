@@ -60,6 +60,7 @@ class ProviderConfig(Model):
     allow_remote_metadata: bool = False
     timeout_seconds: int = Field(default=120, ge=1, le=900)
     json_schema: bool = True
+    max_output_tokens: int = Field(default=4096, ge=256, le=16384)
     max_response_bytes: int = Field(default=1000000, ge=1000, le=2000000)
 
     def check_endpoint(self):
@@ -88,11 +89,31 @@ class OpenAICompatibleProvider:
     def generate(self, prompt, catalog, previous=None):
         self.config.check_endpoint()
         schema = IntentResult.model_json_schema()
+        capabilities = [c for c in builtin_registry().context() if c["implemented"]]
+        # Candidate graphs use task input references; this prevents redundant, contradictory
+        # top-level edges. The full IR still supports explicit edges for trusted authors.
+        schema["$defs"]["PipelineSpec"]["properties"]["dependencies"]["maxItems"] = 0
+        schema["$defs"]["TaskSpec"]["properties"]["capability"]["enum"] = [
+            c["reference"] for c in capabilities
+        ]
+        readable = [a.identifier for a in catalog.assets if "read" in a.allowed_operations]
+        writable = [a.identifier for a in catalog.assets if "write" in a.allowed_operations]
+        if readable:
+            schema["$defs"]["SourceSpec"]["properties"]["asset"]["enum"] = readable
+        if writable:
+            schema["$defs"]["DestinationSpec"]["properties"]["asset"]["enum"] = writable
         system = (
             "You translate untrusted requests into a closed pipeline IR. Return only JSON matching "
             "the response schema. No executable code. Select registered implemented capabilities. "
             "Use asset:ID and task:ID input references; output tasks have outputs [asset:ID]. "
             "Every source must have one ingestion task; outputs need destination declarations. "
+            "Set pipeline dependencies to an empty array: the planner derives edges from task inputs. "
+            "Task dependencies, if used, contain TaskSpec.id values, NEVER asset identifiers. "
+            "For example, task load_x reads asset:x; a following task consumes task:load_x. "
+            "A copy has two tasks: ingestion reads the source asset, output consumes the ingestion task. "
+            "Ingestion/transformation tasks have outputs: []; only output tasks declare asset outputs. "
+            "Keep optional fields at defaults unless requested. Write mode belongs in DestinationSpec. "
+            "Use parameters: {} for capabilities whose parameter schema has no properties. "
             "Only choose assets unambiguously specified by the request/context. Do not invent owners, "
             "join keys, destinations, range thresholds, timezone conversions, or approved authority. "
             "Ask structured clarification for missing critical values, conflicting requirements, "
@@ -105,12 +126,13 @@ class OpenAICompatibleProvider:
         context = {
             "request": prompt,
             "assets": catalog.context(),
-            "capabilities": builtin_registry().context(),
+            "capabilities": capabilities,
             "previous": previous.model_dump(mode="json") if previous else None,
         }
         payload = {
             "model": self.config.model,
             "temperature": 0,
+            "max_tokens": self.config.max_output_tokens,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": json.dumps(context)},

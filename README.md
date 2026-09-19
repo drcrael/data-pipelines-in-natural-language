@@ -61,7 +61,7 @@ The Airflow backend is replaceable; the IR and normalized observations do not de
 - Exact-content, expiring HMAC approvals for production, destructive writes, external writes, and schema evolution. Models cannot grant or disable approval.
 - Airflow 3 TaskFlow generation with schedules, timezone, dependencies, retries, timeouts, documentation and local notification callbacks. Hash-checked shared-storage references keep tables out of XCom.
 - Local fixture execution, Airflow imports and semantic DAG checks, full Airflow local task-runner demonstration, normalized runtime observations and a conservative repair proposal.
-- Fifty acceptance requests, six paraphrases, property/adversarial tests, provider wire tests, and separate evaluation dimensions with machine-readable reports.
+- Fifty acceptance requests, 18 paraphrases across three canonical pipelines, property/adversarial tests, provider wire tests, and separate evaluation dimensions with machine-readable reports.
 
 Registered interfaces for PostgreSQL, object storage, model enrichment, embeddings, entity resolution, arbitrary branching and lifecycle retention are deliberately unavailable in this release. They fail validation until an implementation is installed and reviewed. Notifications are local outbox events. Distributed storage, enterprise identity, automatic production repair and arbitrary generated code are outside the MVP. See [limitations](LIMITATIONS.md).
 

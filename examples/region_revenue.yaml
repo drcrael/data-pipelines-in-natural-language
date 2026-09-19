@@ -1,0 +1,180 @@
+approval_requirements:
+  destructive_writes: true
+  external_writes: true
+  production: true
+catchup: false
+concurrency: 1
+dependencies: []
+description: ''
+destinations:
+- asset: analytics
+  key: []
+  mode: replace
+- asset: parquet_store
+  key: []
+  mode: replace
+execution_policy:
+  environment: dev
+  idempotent: true
+  schema_evolution: reject
+governance_rules: []
+lineage: []
+name: Revenue by region
+notifications: []
+owners:
+- data-team
+parameters: {}
+pipeline_id: regional_revenue
+quality_rules: []
+resources:
+  cpu: 1.0
+  max_rows: 100000
+  memory_mb: 512
+retry_policy:
+  delay_seconds: 60
+  exponential_backoff: true
+  retries: 2
+schedule:
+  cron: 0 3 * * *
+secrets: []
+slas: []
+sources:
+- asset: orders
+  incremental_field: null
+  window: all
+- asset: customers
+  incremental_field: null
+  window: all
+start_date: '2025-01-01T00:00:00Z'
+tags: []
+tasks:
+- capability: ingest.csv@1
+  dependencies: []
+  failure_behavior: stop
+  id: read_orders
+  inputs:
+  - asset:orders
+  outputs: []
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: ingestion
+- capability: ingest.json@1
+  dependencies: []
+  failure_behavior: stop
+  id: read_customers
+  inputs:
+  - asset:customers
+  outputs: []
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: ingestion
+- capability: transform.deduplicate@1
+  dependencies: []
+  failure_behavior: stop
+  id: deduplicate
+  inputs:
+  - task:read_orders
+  outputs: []
+  parameters:
+    keys:
+    - order_id
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: transformation
+- capability: transform.join@1
+  dependencies: []
+  failure_behavior: stop
+  id: join_customers
+  inputs:
+  - task:read_customers
+  - task:deduplicate
+  outputs: []
+  parameters:
+    how: inner
+    left_key: customer_id
+    right_key: customer_id
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: transformation
+- capability: transform.aggregate@1
+  dependencies: []
+  failure_behavior: stop
+  id: sum_revenue
+  inputs:
+  - task:join_customers
+  outputs: []
+  parameters:
+    field: amount
+    group_by:
+    - region
+    operation: sum
+    output: revenue
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: transformation
+- capability: output.jsonl@1
+  dependencies: []
+  failure_behavior: stop
+  id: write_analytics
+  inputs:
+  - task:sum_revenue
+  outputs:
+  - asset:analytics
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: output
+- capability: output.parquet@1
+  dependencies: []
+  failure_behavior: stop
+  id: write_parquet
+  inputs:
+  - task:sum_revenue
+  outputs:
+  - asset:parquet_store
+  parameters: {}
+  quality_checks: []
+  resources:
+    cpu: 1.0
+    max_rows: 100000
+    memory_mb: 512
+  retries: null
+  timeout: null
+  type: output
+timeout_policy:
+  pipeline_seconds: 3600
+  task_seconds: 300
+timezone: UTC
+version: '1.0'

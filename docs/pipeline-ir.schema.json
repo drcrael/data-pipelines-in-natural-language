@@ -462,6 +462,7 @@
         },
         "inputs": {
           "items": {
+            "pattern": "^(asset|task):[a-z][a-z0-9_]{0,62}$",
             "type": "string"
           },
           "title": "Inputs",
@@ -469,6 +470,7 @@
         },
         "outputs": {
           "items": {
+            "pattern": "^asset:[a-z][a-z0-9_]{0,62}$",
             "type": "string"
           },
           "title": "Outputs",

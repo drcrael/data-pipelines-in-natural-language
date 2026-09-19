@@ -16,7 +16,7 @@
 | Conversation and explanation | Previous-IR modifications, diffs, deterministic prose; actual-model round-trip audit reported separately |
 | Observation / repair | Backend-neutral models, Airflow exported-state adapter, evidence-based summaries, draft retry proposal |
 | Testing | Unit, integration, security, property, CLI acceptance, full IR goldens and real Airflow gates |
-| Corpus and evaluation | 50 cases; 8 separately reported dimensions; 6 paraphrases; no mock-as-model accuracy claims |
+| Corpus and evaluation | 50 cases; 8 separately reported dimensions; 18 paraphrases across three canonical pipelines; no mock-as-model accuracy claims |
 | Packaging | Wheel/source distributions, clean installs, checksum manifest, cross-platform release audit |
 | Manual | 14-page PDF plus editable Markdown source and repeatable PDF builder |
 

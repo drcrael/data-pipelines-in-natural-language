@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 from nlpipe.catalog import load_catalog
@@ -27,6 +28,8 @@ requests = [
 results = []
 first_spec = None
 for index, prompt in enumerate(requests):
+    print(f"Running live model case {index + 1}", flush=True)
+    started = time.monotonic()
     result = interpret(prompt, catalog, provider)
     checks = {"ready": result.status == "ready"}
     if result.spec:
@@ -43,8 +46,17 @@ for index, prompt in enumerate(requests):
         )
         if first_spec is None:
             first_spec = spec
-    results.append({"case": index + 1, "checks": checks, "result": result.model_dump(mode="json")})
+    results.append(
+        {
+            "case": index + 1,
+            "checks": checks,
+            "elapsed_seconds": time.monotonic() - started,
+            "result": result.model_dump(mode="json"),
+        }
+    )
+    print(json.dumps({"case": index + 1, "checks": checks, "errors": result.errors}), flush=True)
 if first_spec:
+    print("Running live explanation round-trip", flush=True)
     result = interpret(
         "Reconstruct the pipeline described below. Preserve every stated semantic requirement.\n"
         + explain(first_spec),
