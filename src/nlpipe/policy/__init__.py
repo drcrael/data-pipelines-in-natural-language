@@ -17,6 +17,9 @@ class Decision(Model):
 SECRET = re.compile(
     r"(?i)(?:\b(?:password|passwd|api[_ -]?key|access[_ -]?token|secret)\b[\s:=]+[^\s,;]+|\bsk-[A-Za-z0-9_-]{12,}|://[^/\s:]+:[^/\s@]+@)"
 )
+CREDENTIAL_KEY = re.compile(
+    r"""(?i)["'](?:password|passwd|api[_ -]?key|access[_ -]?token|secret)["']\s*[:=]"""
+)
 ATTACK = re.compile(
     r"(?i)(ignore\s+(?:all\s+|the\s+)?(?:previous|security|system)\s+(?:rules|instructions)|(?:execute|run)\s+(?:this\s+)?(?:python|shell|code)|__import__|\beval\s*\(|\bexec\s*\(|\$\(|\b(?:rm\s+-rf|curl\s+https?://)|;\s*(?:drop|delete)\s+|\.\./)"
 )
@@ -25,7 +28,7 @@ ATTACK = re.compile(
 def screen_prompt(prompt: str):
     if len(prompt) > 20000:
         raise ValueError("Prompt exceeds 20,000 characters")
-    if SECRET.search(prompt):
+    if SECRET.search(prompt) or CREDENTIAL_KEY.search(prompt):
         raise ValueError("Plaintext credentials prohibited; use a registered secret reference")
     if ATTACK.search(prompt):
         raise ValueError("Unsafe executable content or policy-bypass instruction rejected")
