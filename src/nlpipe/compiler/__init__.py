@@ -4,7 +4,7 @@ import ast
 from typing import Protocol
 
 from nlpipe.catalog import Catalog
-from nlpipe.intent import explain
+from nlpipe.explanation import explain
 from nlpipe.ir import PipelineSpec, canonical, digest
 from nlpipe.validation import require_valid
 

@@ -1,0 +1,168 @@
+{
+  "version": "1.0",
+  "pipeline_id": "pipeline",
+  "name": "Data pipeline",
+  "description": "",
+  "owners": [],
+  "tags": [],
+  "schedule": {
+    "cron": null
+  },
+  "timezone": "UTC",
+  "start_date": "2025-01-01T00:00:00Z",
+  "catchup": false,
+  "concurrency": 1,
+  "retry_policy": {
+    "retries": 2,
+    "delay_seconds": 60,
+    "exponential_backoff": true
+  },
+  "timeout_policy": {
+    "task_seconds": 300,
+    "pipeline_seconds": 3600
+  },
+  "parameters": {},
+  "sources": [
+    {
+      "asset": "orders",
+      "incremental_field": null,
+      "window": "all"
+    }
+  ],
+  "destinations": [
+    {
+      "asset": "analytics",
+      "mode": "replace",
+      "key": []
+    }
+  ],
+  "tasks": [
+    {
+      "id": "read_orders",
+      "type": "ingestion",
+      "capability": "ingest.csv@1",
+      "inputs": [
+        "asset:orders"
+      ],
+      "outputs": [],
+      "parameters": {},
+      "dependencies": [],
+      "retries": null,
+      "timeout": null,
+      "resources": {
+        "cpu": 1.0,
+        "memory_mb": 512,
+        "max_rows": 100000
+      },
+      "failure_behavior": "stop",
+      "quality_checks": [
+        "required_id"
+      ]
+    },
+    {
+      "id": "q_read_orders",
+      "type": "quality",
+      "capability": "quality.check@1",
+      "inputs": [
+        "task:read_orders"
+      ],
+      "outputs": [],
+      "parameters": {
+        "rule_ids": [
+          "required_id"
+        ]
+      },
+      "dependencies": [
+        "read_orders"
+      ],
+      "retries": null,
+      "timeout": null,
+      "resources": {
+        "cpu": 1.0,
+        "memory_mb": 512,
+        "max_rows": 100000
+      },
+      "failure_behavior": "stop",
+      "quality_checks": []
+    },
+    {
+      "id": "write_analytics",
+      "type": "output",
+      "capability": "output.jsonl@1",
+      "inputs": [
+        "task:q_read_orders"
+      ],
+      "outputs": [
+        "asset:analytics"
+      ],
+      "parameters": {},
+      "dependencies": [
+        "q_read_orders"
+      ],
+      "retries": null,
+      "timeout": null,
+      "resources": {
+        "cpu": 1.0,
+        "memory_mb": 512,
+        "max_rows": 100000
+      },
+      "failure_behavior": "stop",
+      "quality_checks": []
+    }
+  ],
+  "dependencies": [],
+  "quality_rules": [
+    {
+      "id": "required_id",
+      "task": "read_orders",
+      "kind": "not_null",
+      "field": "customer_id",
+      "parameters": {},
+      "max_invalid_rate": 0.0,
+      "action": "quarantine",
+      "quarantine_asset": "quarantine",
+      "retention_days": null
+    }
+  ],
+  "governance_rules": [],
+  "notifications": [],
+  "slas": [],
+  "lineage": [
+    {
+      "source": "asset:orders",
+      "destination": "task:read_orders"
+    },
+    {
+      "source": "task:q_read_orders",
+      "destination": "asset:quarantine"
+    },
+    {
+      "source": "task:q_read_orders",
+      "destination": "task:write_analytics"
+    },
+    {
+      "source": "task:read_orders",
+      "destination": "task:q_read_orders"
+    },
+    {
+      "source": "task:write_analytics",
+      "destination": "asset:analytics"
+    }
+  ],
+  "resources": {
+    "cpu": 1.0,
+    "memory_mb": 512,
+    "max_rows": 100000
+  },
+  "secrets": [],
+  "execution_policy": {
+    "environment": "dev",
+    "idempotent": true,
+    "schema_evolution": "reject"
+  },
+  "approval_requirements": {
+    "production": true,
+    "external_writes": true,
+    "destructive_writes": true
+  }
+}

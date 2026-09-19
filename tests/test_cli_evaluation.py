@@ -180,3 +180,23 @@ def test_explanation(spec):
         "Governance:",
     ]:
         assert phrase in text
+
+
+@pytest.mark.parametrize(
+    "fixture,prompt",
+    [
+        ("copy", "Load orders into analytics daily at 2 AM."),
+        (
+            "deduplicate",
+            "Read orders, deduplicate using order_id, and write analytics daily at 2 AM.",
+        ),
+        ("quarantine", "Load orders into analytics; quarantine records without customer_id."),
+    ],
+)
+def test_full_ir_goldens(fixture, prompt, catalog):
+    from nlpipe.ir import load
+
+    expected = load(ROOT / "corpus/golden" / f"{fixture}.json")
+    result = interpret(prompt, catalog, ControlledProvider())
+    assert result.status == "ready"
+    assert result.spec == expected

@@ -1,0 +1,1765 @@
+{
+  "provider": "controlled",
+  "model": null,
+  "created_at": "2026-09-19T21:44:46.895050+00:00",
+  "summary": {
+    "intent": {
+      "correct": 50,
+      "scored": 50,
+      "accuracy": 1.0
+    },
+    "assets": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "capabilities": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "graph": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "schedule": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "quality": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "policy": {
+      "correct": 20,
+      "scored": 20,
+      "accuracy": 1.0
+    },
+    "clarification": {
+      "correct": 50,
+      "scored": 50,
+      "accuracy": 1.0
+    },
+    "cases": 50,
+    "passed": 50,
+    "all_cases_pass": true
+  },
+  "results": [
+    {
+      "id": "01",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "time window"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "02",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "destinations.0.mode": true,
+        "execution_policy.idempotent": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "weather_observations"
+          ],
+          "destinations": [
+            "parquet_store"
+          ]
+        },
+        "capabilities": [
+          "ingest.http@1",
+          "output.parquet@1"
+        ],
+        "graph": [
+          [
+            "read_weather_observations",
+            "write_parquet_store"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 * * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "03",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "04",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "join keys"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "05",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "time window"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "06",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "quality rule"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "07",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "aggregation"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "08",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "09",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "10",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "11",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "12",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "13",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "pipeline_id": true,
+        "owners": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "transform.deduplicate@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "deduplicate",
+            "q_deduplicate"
+          ],
+          [
+            "q_deduplicate",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "deduplicate"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 4 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "not_null",
+            "field": "customer_id",
+            "action": "quarantine",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "14",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "quality_rules.0.quarantine_asset": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "transform.deduplicate@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "deduplicate",
+            "q_deduplicate"
+          ],
+          [
+            "q_deduplicate",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "deduplicate"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 2 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "not_null",
+            "field": "customer_id",
+            "action": "quarantine",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "15",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "notifications.0.threshold": true,
+        "notifications.0.on": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "transform.deduplicate@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "deduplicate",
+            "q_deduplicate"
+          ],
+          [
+            "q_deduplicate",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "deduplicate"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 2 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "not_null",
+            "field": "customer_id",
+            "action": "quarantine",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "16",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "17",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "18",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "join keys"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "19",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "20",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "rejected",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": []
+      },
+      "errors": [
+        "Plaintext credentials prohibited; use a registered secret reference"
+      ]
+    },
+    {
+      "id": "21",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "rejected",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": []
+      },
+      "errors": [
+        "Unsafe executable content or policy-bypass instruction rejected"
+      ]
+    },
+    {
+      "id": "22",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "capability"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "23",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "rejected",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": []
+      },
+      "errors": [
+        "Unbounded retries are prohibited"
+      ]
+    },
+    {
+      "id": "24",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics",
+            "parquet_store"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1",
+          "output.parquet@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "write_parquet_store"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "25",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "q_read_orders",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "q_read_orders"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "not_null",
+            "field": "customer_id",
+            "action": "fail",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "26",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "27",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "28",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 0 * * 1-6",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "29",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "30",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "31",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 2 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "32",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "tasks.1.parameters.keys": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "transform.deduplicate@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "deduplicate",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "deduplicate"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 2 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "33",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "customers"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.json@1",
+          "transform.normalize@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "normalize",
+            "write_analytics"
+          ],
+          [
+            "read_customers",
+            "normalize"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "34",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {
+        "tasks.1.parameters.operation": true,
+        "tasks.1.parameters.group_by": true
+      },
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "transform.aggregate@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "aggregate",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "aggregate"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "35",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "q_read_orders",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "q_read_orders"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "schema",
+            "field": null,
+            "action": "fail",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "36",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "quality.check@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "q_read_orders",
+            "write_analytics"
+          ],
+          [
+            "read_orders",
+            "q_read_orders"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [
+          {
+            "kind": "not_null",
+            "field": "customer_id",
+            "action": "quarantine",
+            "max_invalid_rate": 0.0
+          }
+        ],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "37",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "*/15 * * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "38",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 0 * * 1",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "39",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 2 * * *",
+          "timezone": "America/Los_Angeles"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "40",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "schedule"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "41",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "schedule"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "42",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "source"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "43",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "rejected",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": []
+      },
+      "errors": [
+        "Unsafe executable content or policy-bypass instruction rejected"
+      ]
+    },
+    {
+      "id": "44",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "rejected",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": []
+      },
+      "errors": [
+        "Unsafe executable content or policy-bypass instruction rejected"
+      ]
+    },
+    {
+      "id": "45",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "46",
+      "scores": {
+        "intent": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "needs_clarification",
+        "assets": null,
+        "capabilities": null,
+        "graph": null,
+        "schedule": null,
+        "quality": null,
+        "policy": null,
+        "clarification": [
+          "adapter"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "id": "47",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "web_events"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.jsonl@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_web_events",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 * * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "48",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "inventory"
+          ],
+          "destinations": [
+            "analytics"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.jsonl@1"
+        ],
+        "graph": [
+          [
+            "read_inventory",
+            "write_analytics"
+          ]
+        ],
+        "schedule": {
+          "cron": "0 0 * * *",
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "49",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": [
+            "warehouse"
+          ]
+        },
+        "capabilities": [
+          "ingest.csv@1",
+          "output.sql@1"
+        ],
+        "graph": [
+          [
+            "read_orders",
+            "write_warehouse"
+          ]
+        ],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    },
+    {
+      "id": "50",
+      "scores": {
+        "intent": true,
+        "assets": true,
+        "capabilities": true,
+        "graph": true,
+        "schedule": true,
+        "quality": true,
+        "policy": true,
+        "clarification": true
+      },
+      "canonical": {},
+      "passed": true,
+      "actual": {
+        "intent": "ready",
+        "assets": {
+          "sources": [
+            "orders"
+          ],
+          "destinations": []
+        },
+        "capabilities": [
+          "ingest.csv@1"
+        ],
+        "graph": [],
+        "schedule": {
+          "cron": null,
+          "timezone": "UTC"
+        },
+        "quality": [],
+        "policy": [
+          "PASS",
+          "WARN"
+        ],
+        "clarification": []
+      },
+      "errors": []
+    }
+  ]
+}

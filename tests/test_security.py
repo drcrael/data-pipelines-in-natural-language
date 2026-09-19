@@ -202,3 +202,21 @@ def test_http_errors_sanitized(catalog):
     result = interpret("Load orders", catalog, provider)
     assert result.status == "rejected"
     assert "secret-credential" not in result.model_dump_json()
+
+
+def test_read_write_permission_denial(spec, catalog):
+    catalog.assets[0].allowed_operations = []
+    assert not validate(spec, catalog).valid
+
+
+def test_quality_references_cannot_be_invented(spec, catalog):
+    spec.tasks[0].quality_checks = ["nonexistent_rule"]
+    assert not validate(spec, catalog).valid
+
+
+def test_plaintext_provider_error_redaction(catalog):
+    result = interpret(
+        "Load orders", catalog, MockProvider({"status": "rejected", "errors": ["password hunter2"]})
+    )
+    assert result.status == "rejected"
+    assert "hunter2" not in result.model_dump_json()

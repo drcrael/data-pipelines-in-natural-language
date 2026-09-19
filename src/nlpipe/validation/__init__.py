@@ -29,8 +29,12 @@ def validate(
     registry = registry or builtin_registry()
     errors = []
     try:
-        # Revalidate even model_copy/update callers.
-        spec = normalize(PipelineSpec.model_validate(spec.model_dump(mode="json")))
+        spec = PipelineSpec.model_validate(spec.model_dump(mode="json"))
+        rule_targets = {r.id: r.task for r in spec.quality_rules}
+        for task in spec.tasks:
+            if any(rule_targets.get(q) != task.id for q in task.quality_checks):
+                raise ValueError("Unknown or incorrectly bound task quality reference")
+        spec = normalize(spec)
     except (ValueError, TypeError) as exc:
         return ValidationReport(valid=False, errors=[str(exc)])
     ids = {t.id for t in spec.tasks}
