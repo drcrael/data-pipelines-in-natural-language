@@ -84,6 +84,8 @@ def read(asset: Asset, root: Path, max_rows: int, allow_http: bool = False):
                 for key, value in row.items():
                     if value == "":
                         row[key] = None
+                    elif asset.schema_fields.get(key) == "boolean" and value in {"true", "false"}:
+                        row[key] = value == "true"
                     elif asset.schema_fields.get(key) in {"integer", "number"}:
                         try:
                             row[key] = (

@@ -219,3 +219,31 @@ def test_multisource_join_aggregate_fanout(catalog, data_root):
     import pyarrow.parquet as pq
 
     assert pq.read_table(data_root / "output/data.parquet").to_pylist() == expected
+
+
+def test_datetime_schema_is_not_just_any_string():
+    rule = QualityRule(id="schema", task="read", kind="schema")
+    rows = [
+        {"ts": "2025-01-01T00:00:00+00:00"},
+        {"ts": "not a date"},
+        {"ts": "2025-01-01T00:00:00"},
+    ]
+    invalid, result = check_rows(rule, rows, {"ts": "datetime"}, datetime.now(UTC))
+    assert invalid == [1, 2]
+    assert result.invalid == 2
+
+
+def test_csv_boolean_declaration(tmp_path):
+    (tmp_path / "bool.csv").write_text("flag\ntrue\nfalse\nunknown\n")
+    asset = Asset(
+        identifier="boolean_data", type="csv", location="bool.csv", schema={"flag": "boolean"}
+    )
+    rows = read(asset, tmp_path, 10)
+    assert rows == [{"flag": True}, {"flag": False}, {"flag": "unknown"}]
+    invalid, _ = check_rows(
+        QualityRule(id="schema", task="read", kind="schema"),
+        rows,
+        {"flag": "boolean"},
+        datetime.now(UTC),
+    )
+    assert invalid == [2]

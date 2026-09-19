@@ -66,6 +66,14 @@ def check_rows(rule, rows, schema, now):
                 )
                 for k, v in schema.items()
             )
+            if good:
+                for column, kind in schema.items():
+                    if kind == "datetime" and row[column] is not None:
+                        try:
+                            parsed = datetime.fromisoformat(row[column])
+                            good = good and "T" in row[column] and parsed.tzinfo is not None
+                        except (ValueError, TypeError):
+                            good = False
         elif rule.kind == "freshness":
             try:
                 parsed = datetime.fromisoformat(value)
