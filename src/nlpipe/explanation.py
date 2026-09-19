@@ -54,7 +54,7 @@ def explain(spec: PipelineSpec) -> str:
             f"destructive_writes={spec.approval_requirements.destructive_writes}. Mandatory gates still apply.",
             f"Governance rules: {[r.model_dump() for r in spec.governance_rules]}.",
             f"SLAs: {[s.model_dump() for s in spec.slas]}. Runtime parameters: {spec.parameters}.",
-            f"Secret references (not values): {[s.model_dump() for s in spec.secrets]}.",
+            f"Credential references (not values): {[s.model_dump() for s in spec.secrets]}.",
             f"Notifications: {[n.model_dump() for n in spec.notifications]}.",
             f"Governance: environment={spec.execution_policy.environment}; owners={spec.owners}; "
             "production, destructive writes and external writes require human approval.",

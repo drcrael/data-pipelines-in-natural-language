@@ -225,3 +225,9 @@ def test_explanation_preserves_operational_distinctions(spec, path, value):
         target = target[int(part)] if part.isdigit() else getattr(target, part)
     setattr(target, parts[-1], value)
     assert explain(spec) != before
+
+
+def test_generated_explanation_can_cross_prompt_security_boundary(spec):
+    from nlpipe.policy import screen_prompt
+
+    screen_prompt("Reconstruct the pipeline described below.\n" + explain(spec))

@@ -296,6 +296,13 @@ def test_model_candidate_schema_is_registry_scoped(catalog, spec):
         assert validator.is_valid(good)
         from copy import deepcopy
 
+        missing_destination = deepcopy(good)
+        missing_destination["spec"].pop("destinations")
+        assert not validator.is_valid(missing_destination)
+        disabled_gate = deepcopy(good)
+        disabled_gate["spec"]["approval_requirements"]["production"] = False
+        assert not validator.is_valid(disabled_gate)
+
         bad = deepcopy(good)
         bad["spec"]["tasks"][0]["outputs"] = ["asset:analytics"]
         assert not validator.is_valid(bad)
