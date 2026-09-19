@@ -185,7 +185,11 @@ def interpret(
         from pydantic import ValidationError
 
         error = (
-            "Provider returned an invalid response schema"
+            "Provider returned an invalid response schema: "
+            + "; ".join(
+                ".".join(map(str, e["loc"])) + " (" + e["type"] + ")"
+                for e in exc.errors(include_input=False, include_url=False)
+            )
             if isinstance(exc, ValidationError)
             else str(exc)
         )

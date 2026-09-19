@@ -1,0 +1,38 @@
+{
+  "provider": "openai_compatible",
+  "model": "qwen2.5:3b",
+  "cases": [
+    {
+      "case": 1,
+      "checks": {
+        "ready": false
+      },
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Provider returned an invalid response schema"
+        ]
+      }
+    },
+    {
+      "case": 2,
+      "checks": {
+        "ready": false
+      },
+      "result": {
+        "status": "rejected",
+        "intent": "",
+        "spec": null,
+        "questions": [],
+        "errors": [
+          "Provider returned an invalid response schema"
+        ]
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Two live paraphrases plus one explanation round-trip; not a broad LLM accuracy benchmark."
+}

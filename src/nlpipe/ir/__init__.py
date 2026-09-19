@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Any, Literal
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import yaml
 from croniter import croniter
@@ -182,7 +182,10 @@ class PipelineSpec(Model):
     @field_validator("timezone")
     @classmethod
     def valid_timezone(cls, value):
-        ZoneInfo(value)
+        try:
+            ZoneInfo(value)
+        except (ZoneInfoNotFoundError, ValueError) as exc:
+            raise ValueError("Unknown timezone") from exc
         return value
 
     @field_validator("start_date")

@@ -18,7 +18,7 @@ catalog = load_catalog(Path("examples/catalog.yaml"))
 # A focused catalog is an administrator scope restriction, not an expected answer.
 catalog.assets = [a for a in catalog.assets if a.identifier in {"orders", "analytics"}]
 provider = OpenAICompatibleProvider(
-    ProviderConfig(base_url=args.base_url, model=args.model, json_schema=False, timeout_seconds=900)
+    ProviderConfig(base_url=args.base_url, model=args.model, json_schema=True, timeout_seconds=900)
 )
 requests = [
     "Create an ad-hoc development pipeline named orders_copy, pipeline_id orders_copy. Read all orders records and write them to analytics, replacing its contents. No transformations or quality checks. Use UTC and no catchup.",

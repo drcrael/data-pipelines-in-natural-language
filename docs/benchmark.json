@@ -1,0 +1,7 @@
+{
+  "input_rows": 100000,
+  "output_rows": 50000,
+  "elapsed_seconds": 4.8384282840002015,
+  "peak_python_traced_mib": 41.47517681121826,
+  "memory_scope": "Python traced allocations; excludes native-library and interpreter memory"
+}

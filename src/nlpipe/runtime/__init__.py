@@ -233,13 +233,13 @@ def execute_task(spec, catalog, task, inputs, root, run_id, now, quality_results
         for rule in rules:
             # Schema comes from the immediate lineage where possible; explicit schema override is supported.
             schema = rule.parameters.get("schema")
-            if schema is None:
+            if schema is None and rule.kind == "schema":
                 if len(spec.sources) != 1:
                     raise ValueError(
                         "Schema quality checks on multiple sources require explicit schema"
                     )
                 schema = catalog.get(spec.sources[0].asset).schema_fields
-            invalid, result = check_rows(rule, rows, schema, now)
+            invalid, result = check_rows(rule, rows, schema or {}, now)
             quality_results.append(result)
             _notify(spec, catalog, root, "quality", run_id, result.model_dump(mode="json"))
             if rule.action == "quarantine":

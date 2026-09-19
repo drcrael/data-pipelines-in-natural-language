@@ -1,0 +1,15 @@
+# Security model
+
+Treat prompts, model output, data rows and imported runtime observations as untrusted. Catalogs, installed capability implementations, data roots and approval-key distribution are administrator-controlled configuration.
+
+The compiler emits a fixed TaskFlow template from validated data. No eval, exec, shell command, model-supplied Python, dynamic model-named module import, or model-supplied SQL is used. Capability parameters are validated against closed JSON Schemas. Unknown references and unavailable adapters fail. The planner derives execution dependencies and lineage rather than accepting model claims of authority.
+
+Prompt screening rejects common credential and executable-payload patterns before model transmission. This is defense in depth, not a complete secret detector. Do not enter secrets into prompts. A separate IR scan rejects credential fields and unsafe strings. Model response errors are sanitized. Source rows, catalog locations and credential values are excluded from inference context; prompts, column names, aliases, operation metadata and previous IR may still be sensitive.
+
+Provider transport disables redirects and inherited proxies, bounds response size and timeout, and permits remote metadata only with explicit HTTPS configuration. Local classification requires a literal loopback IP. HTTPS asset reads require a trusted catalog and runtime network opt-in. Catalog administrators must vet endpoints and network policy; the runtime does not implement an untrusted-URL fetch service.
+
+Filesystem locations are confined to an explicit root and reject absolute/traversal paths and symlinks that resolve outside it. Temporary files are atomically replaced for file outputs. This assumes administrators prevent hostile concurrent edits to the root, catalog and symlink topology; it is not a defense against a local attacker with write access. Input size/row bounds and join-expansion bounds reduce resource exhaustion risk. SQLite identifiers come from constrained catalog identifiers; data values are bound parameters.
+
+Human approval is an expiring signature over normalized IR, catalog and environment. Production, destructive rebuild, external-write and schema-evolution gates cannot be disabled through model output. HMAC uses `NLPIPE_APPROVAL_KEY`, supplied outside the IR and generated code. Keep approval artifacts and manifests protected. The signing key holder is trusted; actor labels do not authenticate people. Use a dedicated account and key-management service when deploying beyond a single administrative boundary.
+
+Synthetic fixtures include deliberate invalid values and attack strings solely for tests. Tests disable network connections and exercise provider payloads through controlled transports. Live-model and actual Airflow execution audits run separately against synthetic fixtures. Report suspected vulnerabilities privately through the repository owner's GitHub contact rather than publishing credentials or sensitive data in an issue.

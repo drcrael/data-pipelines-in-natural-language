@@ -42,3 +42,4 @@ jobs:
       - run: python -m pip install ".[dev,parquet]" "apache-airflow==3.1.8"
       - run: pytest -m airflow
       - run: nlpipe test examples/orders.yaml --catalog examples/catalog.yaml --airflow --fixture-root examples/fixtures
+      - run: python scripts/airflow_e2e.py /tmp/nlpipe-airflow-e2e

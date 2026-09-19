@@ -5,7 +5,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 from pydantic import Field
 
-from nlpipe.capabilities import Registry, builtin_registry
+from nlpipe.capabilities import Registry, builtin_registry, schema
 from nlpipe.catalog import Catalog
 from nlpipe.ir import Model, PipelineSpec
 from nlpipe.planner import normalize
@@ -180,6 +180,20 @@ def validate(
                 rule_ids
             ):
                 errors.append("Unknown quality rule reference")
+            if task.type == "output" and task.outputs:
+                target_schema = catalog.get(task.outputs[0][6:]).schema_fields
+                if target_schema and current:
+                    if set(target_schema) != set(current) or any(
+                        current[k] != target_schema[k]
+                        and not (current[k] == "integer" and target_schema[k] == "number")
+                        for k in current
+                        if k in target_schema
+                    ):
+                        errors.append(f"Destination schema mismatch: {task.id}")
+            if task.failure_behavior == "notify_and_stop" and not any(
+                n.on == "failure" for n in spec.notifications
+            ):
+                errors.append("notify_and_stop requires a failure notification destination")
             schemas["task:" + task.id] = current
             if task.resources.max_rows > spec.resources.max_rows:
                 errors.append("Task row limit exceeds pipeline limit")
@@ -190,6 +204,43 @@ def validate(
     if dest_ids != used_destinations:
         errors.append("Every declared destination must be written")
     for rule in spec.quality_rules:
+        contracts = {
+            "not_null": schema(),
+            "unique": schema(),
+            "range": schema({"min": {"type": "number"}, "max": {"type": "number"}}, ["min", "max"]),
+            "row_count": schema(
+                {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}
+            ),
+            "freshness": schema(
+                {"max_age_seconds": {"type": "number", "exclusiveMinimum": 0}}, ["max_age_seconds"]
+            ),
+            "schema": schema(
+                {
+                    "schema": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "enum": ["string", "integer", "number", "boolean", "datetime"]
+                        },
+                    }
+                }
+            ),
+        }
+        if rule.kind in contracts and list(
+            Draft202012Validator(contracts[rule.kind]).iter_errors(rule.parameters)
+        ):
+            errors.append(f"Invalid quality parameters: {rule.id}")
+        if rule.kind == "schema" and "schema" not in rule.parameters:
+            if len(spec.sources) != 1 or any(
+                t.capability
+                in {
+                    "transform.join@1",
+                    "transform.aggregate@1",
+                    "transform.map@1",
+                    "transform.schema_mapping@1",
+                }
+                for t in spec.tasks
+            ):
+                errors.append("Schema checks after shape changes require an explicit schema")
         rule_fields = schemas.get("task:" + rule.task, {})
         if rule.field and rule_fields and rule.field not in rule_fields:
             errors.append(f"Quality field absent: {rule.field}")

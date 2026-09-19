@@ -223,7 +223,7 @@ class ControlledProvider:
             else:
                 return question("source", "Multiple sources require explicit combination semantics")
             head = tasks[-1].id
-        if any(s in text for s in ("deduplicate", "duplicates", "unique")):
+        if any(s in text for s in ("deduplicate", "duplicates")):
             key = re.search(r"(?:using|by|on)\s+([a-z][a-z0-9_]*)(?:[,. ]|$)", text)
             if not key:
                 return question("deduplication key", "Specify the identity column")
@@ -290,6 +290,9 @@ class ControlledProvider:
                     quarantine_asset="quarantine" if action == "quarantine" else None,
                 )
             )
+        elif unique_match := re.search(r"(\w+)\s+is\s+unique", text):
+            unique_field = unique_match[1]
+            rules.append(QualityRule(id="unique_key", task=head, kind="unique", field=unique_field))
         elif "schema" in text:
             rules.append(QualityRule(id="schema_check", task=head, kind="schema"))
         elif "quarantine" in text or "validat" in text:

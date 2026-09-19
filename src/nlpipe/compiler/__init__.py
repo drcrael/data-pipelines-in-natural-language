@@ -54,7 +54,8 @@ def notify_success(context):
 def run_step(task_id, upstream):
     context = get_current_context()
     return airflow_execute(SPEC, CATALOG_HASH, task_id, upstream,
-                           context["run_id"], context["data_interval_end"].isoformat())
+                           context["run_id"], (context.get("data_interval_end") or
+                           context.get("logical_date") or context["dag_run"].run_after).isoformat())
 
 with DAG(
     dag_id={spec.pipeline_id!r},

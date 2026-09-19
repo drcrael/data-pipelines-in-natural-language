@@ -1,0 +1,6 @@
+include LICENSE README.md VALIDATION.md LIMITATIONS.md SECURITY.md CONTRIBUTING.md
+recursive-include docs *.md *.pdf *.json
+recursive-include examples *.yaml *.json *.jsonl *.csv
+recursive-include corpus *.json
+recursive-include tests *.py
+recursive-include scripts *.py
