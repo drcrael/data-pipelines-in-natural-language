@@ -299,6 +299,12 @@ def test_model_candidate_schema_is_registry_scoped(catalog, spec):
         missing_destination = deepcopy(good)
         missing_destination["spec"].pop("destinations")
         assert not validator.is_valid(missing_destination)
+        missing_retry = deepcopy(good)
+        missing_retry["spec"].pop("retry_policy")
+        assert not validator.is_valid(missing_retry)
+        incomplete_retry = deepcopy(good)
+        incomplete_retry["spec"]["retry_policy"] = {}
+        assert not validator.is_valid(incomplete_retry)
         disabled_gate = deepcopy(good)
         disabled_gate["spec"]["approval_requirements"]["production"] = False
         assert not validator.is_valid(disabled_gate)

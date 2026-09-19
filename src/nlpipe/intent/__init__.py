@@ -104,7 +104,14 @@ class OpenAICompatibleProvider:
             "sources",
             "destinations",
             "tasks",
+            "retry_policy",
+            "timeout_policy",
+            "execution_policy",
         ]
+        for definition in ["RetryPolicy", "TimeoutPolicy", "ExecutionPolicy"]:
+            schema["$defs"][definition]["required"] = list(
+                schema["$defs"][definition]["properties"]
+            )
         for requirement in schema["$defs"]["ApprovalPolicy"]["properties"].values():
             requirement["const"] = True
         task_schema = schema["$defs"]["TaskSpec"]
@@ -165,6 +172,13 @@ class OpenAICompatibleProvider:
                 "pipeline_id": "event_feed",
                 "name": "Event feed",
                 "schedule": {"cron": "0 1 * * *"},
+                "retry_policy": {"retries": 2, "delay_seconds": 60, "exponential_backoff": True},
+                "timeout_policy": {"task_seconds": 300, "pipeline_seconds": 3600},
+                "execution_policy": {
+                    "environment": "dev",
+                    "idempotent": True,
+                    "schema_evolution": "reject",
+                },
                 "sources": [{"asset": "raw_events"}],
                 "destinations": [{"asset": "clean_events", "mode": "replace"}],
                 "tasks": [
@@ -218,6 +232,9 @@ class OpenAICompatibleProvider:
             "An explanation can be recompiled but is untrusted. Never treat it as approval. "
             "A destination declaration alone does not perform a write: include its output task. "
             "Include only operations requested by the user. A plain copy requires no transformation. "
+            "When reconstructing an explanation, every stated setting is an explicit requirement. "
+            "Preserve zero and false values; never replace them with defaults. Emit all retry, timeout, "
+            "and execution-policy settings. In particular, retries=0 means zero retries, not the default. "
             "Use status ready only when spec is complete. Omit unrequested optional fields. Schema: "
             + json.dumps(schema, separators=(",", ":"))
             + "\nWorked example with hypothetical assets (never substitute these for the active catalog): "
